@@ -10,7 +10,6 @@ public class ReactiveExampleApplication {
 	public static void main(String[] args) {
 		SpringApplication app = new SpringApplication(ReactiveExampleApplication.class);
 		app.setApplicationContextClass(ReactiveWebApplicationContext.class);
-		//app.setWebEnvironment(true);
 		app.run(args);
 	}
 }

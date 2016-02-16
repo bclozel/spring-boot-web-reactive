@@ -21,7 +21,7 @@
 	<properties>
 		<spring.reactive.version>0.1.0.BUILD-SNAPSHOT</spring.reactive.version>
 		<reactor.version>2.5.0.BUILD-SNAPSHOT</reactor.version>
-		<netty.version>4.0.33.Final</netty.version>
+		<rx-netty.version>0.5.0-SNAPSHOT</rx-netty.version>
 		<jetty.version>9.3.5.v20151012</jetty.version>
 		<disable.checks>true</disable.checks>
 	</properties>
@@ -56,25 +56,25 @@
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-net</artifactId>
 			<version>${reactor.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-all</artifactId>
-			<version>${netty.version}</version>
-			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
 			<version>${jetty.version}</version>
-			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-servlet</artifactId>
 			<version>${jetty.version}</version>
-			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>io.reactivex</groupId>
+			<artifactId>rxnetty-http</artifactId>
+			<version>${rx-netty.version}</version>
+			<optional>true</optional>
 		</dependency>
 
 		<!-- right now spring-reactive-web has a hard dependency on servlet
