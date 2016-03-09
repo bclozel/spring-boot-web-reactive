@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-reactive-web</artifactId>
-			<version>1.4.0.BUILD-SNAPSHOT</version>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- uncomment next section to use reactor-net -->
@@ -117,5 +117,18 @@
 				<enabled>true</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>spring-milestone</id>
+			<url>http://repo.spring.io/milestone</url>
+		</repository>
 	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-snapshots</id>
+			<url>http://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 </project>
