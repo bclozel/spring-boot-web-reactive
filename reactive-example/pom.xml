@@ -24,7 +24,7 @@
 
 		<!-- TODO: force reactor version? -->
 		<reactor.version>2.5.0.BUILD-SNAPSHOT</reactor.version>
-		<netty.version>4.0.33.Final</netty.version>
+		<netty.version>4.1.0.CR3</netty.version>
 		<jetty.version>9.3.5.v20151012</jetty.version>
 	</properties>
 
@@ -106,6 +106,14 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -113,6 +121,13 @@
 		<repository>
 			<id>spring-snapshots</id>
 			<url>http://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>oss-jfrog-snapshots</id>
+			<url>https://oss.jfrog.org/libs-snapshot</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>

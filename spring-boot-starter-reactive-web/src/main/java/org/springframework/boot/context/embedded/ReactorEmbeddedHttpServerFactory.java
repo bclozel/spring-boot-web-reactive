@@ -14,6 +14,7 @@ public class ReactorEmbeddedHttpServerFactory implements ReactiveHttpServerFacto
 	@Override
 	public ReactiveEmbeddedHttpServer getReactiveHttpServer(HttpHandler httpHandler) {
 		ReactorEmbeddedHttpServer server = new ReactorEmbeddedHttpServer();
+		server.setAllocator(dataBufferAllocator);
 		server.setHandler(httpHandler);
 		server.setPort(8080);
 		server.setAllocator(this.dataBufferAllocator);

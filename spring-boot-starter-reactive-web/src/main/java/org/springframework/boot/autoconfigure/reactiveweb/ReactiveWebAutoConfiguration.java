@@ -1,23 +1,22 @@
 package org.springframework.boot.autoconfigure.reactiveweb;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.codec.Encoder;
 import org.springframework.core.codec.support.ByteBufferEncoder;
 import org.springframework.core.codec.support.JacksonJsonEncoder;
-import org.springframework.core.codec.support.JsonObjectEncoder;
 import org.springframework.core.codec.support.StringEncoder;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.core.convert.support.ReactiveStreamsToCompletableFutureConverter;
-import org.springframework.core.io.buffer.DataBufferAllocator;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.web.reactive.DispatcherHandler;
 import org.springframework.web.reactive.ResponseStatusExceptionHandler;
@@ -80,12 +79,9 @@ public class ReactiveWebAutoConfiguration implements ApplicationContextAware {
 	}
 
 	@Bean
-	public ResponseBodyResultHandler responseBodyResultHandler(
-			@Qualifier(ReactiveHttpServerAutoConfiguration.RUNTIME_DATABUFFER_ALLOCATOR_BEAN_NAME)
-					DataBufferAllocator bufferAllocator) {
-		return new ResponseBodyResultHandler(Arrays.asList(
-				new ByteBufferEncoder(bufferAllocator), new StringEncoder(bufferAllocator),
-				new JacksonJsonEncoder(bufferAllocator, new JsonObjectEncoder(bufferAllocator))), conversionService());
+	public ResponseBodyResultHandler responseBodyResultHandler() {
+		List<Encoder<?>> encoders =Arrays.asList(new ByteBufferEncoder(), new StringEncoder(),new JacksonJsonEncoder());
+		return new ResponseBodyResultHandler(encoders, conversionService());
 	}
 
 	@Bean
