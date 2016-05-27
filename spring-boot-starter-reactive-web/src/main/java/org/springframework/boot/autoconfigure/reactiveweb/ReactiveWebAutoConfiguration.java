@@ -1,7 +1,8 @@
 package org.springframework.boot.autoconfigure.reactiveweb;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -10,20 +11,22 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.codec.Encoder;
 import org.springframework.core.codec.support.ByteBufferEncoder;
 import org.springframework.core.codec.support.JacksonJsonEncoder;
 import org.springframework.core.codec.support.StringEncoder;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.GenericConversionService;
 import org.springframework.core.convert.support.ReactiveStreamsToCompletableFutureConverter;
+import org.springframework.http.converter.reactive.CodecHttpMessageConverter;
+import org.springframework.http.converter.reactive.HttpMessageConverter;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.web.reactive.DispatcherHandler;
 import org.springframework.web.reactive.ResponseStatusExceptionHandler;
-import org.springframework.web.reactive.handler.SimpleHandlerResultHandler;
-import org.springframework.web.reactive.method.annotation.RequestMappingHandlerAdapter;
-import org.springframework.web.reactive.method.annotation.RequestMappingHandlerMapping;
-import org.springframework.web.reactive.method.annotation.ResponseBodyResultHandler;
+import org.springframework.web.reactive.accept.HeaderContentTypeResolver;
+import org.springframework.web.reactive.result.SimpleResultHandler;
+import org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerAdapter;
+import org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.reactive.result.method.annotation.ResponseBodyResultHandler;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 
 /**
@@ -80,13 +83,16 @@ public class ReactiveWebAutoConfiguration implements ApplicationContextAware {
 
 	@Bean
 	public ResponseBodyResultHandler responseBodyResultHandler() {
-		List<Encoder<?>> encoders =Arrays.asList(new ByteBufferEncoder(), new StringEncoder(),new JacksonJsonEncoder());
-		return new ResponseBodyResultHandler(encoders, conversionService());
+		List<HttpMessageConverter<?>> converters = Stream
+				.of(new ByteBufferEncoder(), new StringEncoder(), new JacksonJsonEncoder())
+				.map(encoder -> new CodecHttpMessageConverter<>(encoder, null))
+				.collect(Collectors.toList());
+		return new ResponseBodyResultHandler(converters, conversionService(), new HeaderContentTypeResolver());
 	}
 
 	@Bean
-	public SimpleHandlerResultHandler simpleHandlerResultHandler() {
-		return new SimpleHandlerResultHandler(conversionService());
+	public SimpleResultHandler simpleHandlerResultHandler() {
+		return new SimpleResultHandler(conversionService());
 	}
 
 }

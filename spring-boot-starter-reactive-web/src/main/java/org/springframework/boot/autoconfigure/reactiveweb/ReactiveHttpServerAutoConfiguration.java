@@ -11,7 +11,6 @@ import org.springframework.boot.context.embedded.RxNettyEmbeddedHttpServerFactor
 import org.springframework.boot.context.embedded.TomcatEmbeddedHttpServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.buffer.NettyDataBufferAllocator;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.web.reactive.DispatcherHandler;
 
@@ -36,7 +35,7 @@ public class ReactiveHttpServerAutoConfiguration {
 	public static class ReactorAutoConfiguration {
 		@Bean
 		public ReactorEmbeddedHttpServerFactory reactorEmbeddedHttpServerFactory() {
-			return new ReactorEmbeddedHttpServerFactory(new NettyDataBufferAllocator(UnpooledByteBufAllocator.DEFAULT));
+			return new ReactorEmbeddedHttpServerFactory();
 		}
 	}
 
