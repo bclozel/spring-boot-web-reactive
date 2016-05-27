@@ -26,6 +26,7 @@
 		<reactor.version>2.5.0.BUILD-SNAPSHOT</reactor.version>
 		<netty.version>4.1.0.CR3</netty.version>
 		<jetty.version>9.3.9.v20160517</jetty.version>
+		<tomcat.version>8.5.2</tomcat.version>
 	</properties>
 
 	<dependencies>

@@ -1,0 +1,39 @@
+package org.springframework.boot.autoconfigure.reactiveweb;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.env.EnvironmentPostProcessor;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
+
+/**
+ * @author Brian Clozel
+ */
+public class ReactiveContextPostProcessor implements EnvironmentPostProcessor, Ordered {
+
+	private static final Map<String, Object> PROPERTIES;
+
+	public static final int DEFAULT_ORDER = Ordered.HIGHEST_PRECEDENCE + 9;
+
+	static {
+		Map<String, Object> properties = new HashMap<>();
+		properties.put("spring.main.applicationContextClass",
+				"org.springframework.boot.context.embedded.ReactiveWebApplicationContext");
+		PROPERTIES = Collections.unmodifiableMap(properties);
+	}
+
+	@Override
+	public int getOrder() {
+		return DEFAULT_ORDER;
+	}
+
+	@Override
+	public void postProcessEnvironment(ConfigurableEnvironment configurableEnvironment, SpringApplication springApplication) {
+		configurableEnvironment.getPropertySources().addLast(new MapPropertySource("reactive", PROPERTIES));
+	}
+}

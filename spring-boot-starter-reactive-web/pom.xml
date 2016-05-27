@@ -27,6 +27,7 @@
 		<rx-netty.version>0.5.0-SNAPSHOT</rx-netty.version>
 		<netty.version>4.1.0.CR3</netty.version>
 		<jetty.version>9.3.5.v20151012</jetty.version>
+		<tomcat.version>8.5.2</tomcat.version>
 		<disable.checks>true</disable.checks>
 	</properties>
 	<dependencies>

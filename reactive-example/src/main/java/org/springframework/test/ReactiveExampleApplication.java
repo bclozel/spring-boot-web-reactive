@@ -8,8 +8,6 @@ import org.springframework.boot.context.embedded.ReactiveWebApplicationContext;
 public class ReactiveExampleApplication {
 
 	public static void main(String[] args) {
-		SpringApplication app = new SpringApplication(ReactiveExampleApplication.class);
-		app.setApplicationContextClass(ReactiveWebApplicationContext.class);
-		app.run(args);
+		SpringApplication.run(ReactiveExampleApplication.class, args);
 	}
 }
