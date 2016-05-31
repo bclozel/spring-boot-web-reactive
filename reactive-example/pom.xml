@@ -22,9 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
 
-		<!-- TODO: force reactor version? -->
 		<reactor.version>2.5.0.BUILD-SNAPSHOT</reactor.version>
-		<netty.version>4.1.0.CR3</netty.version>
 		<jetty.version>9.3.9.v20160517</jetty.version>
 		<tomcat.version>8.5.2</tomcat.version>
 	</properties>
@@ -43,7 +41,7 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
-		<!-- uncomment next section to use reactor-net -->
+		<!-- uncomment next section to use reactor-netty -->
 		<!--
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -58,13 +56,8 @@
 		</dependency>
 		<dependency>
 			<groupId>io.projectreactor</groupId>
-			<artifactId>reactor-net</artifactId>
+			<artifactId>reactor-netty</artifactId>
 			<version>${reactor.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-all</artifactId>
-			<version>${netty.version}</version>
 		</dependency>
 		-->
 

@@ -25,7 +25,6 @@
 		<spring.reactive.version>0.1.0.BUILD-SNAPSHOT</spring.reactive.version>
 		<reactor.version>2.5.0.BUILD-SNAPSHOT</reactor.version>
 		<rx-netty.version>0.5.0-SNAPSHOT</rx-netty.version>
-		<netty.version>4.1.0.CR3</netty.version>
 		<jetty.version>9.3.5.v20151012</jetty.version>
 		<tomcat.version>8.5.2</tomcat.version>
 		<disable.checks>true</disable.checks>
@@ -57,12 +56,6 @@
 		</dependency>
 
 		<!-- optional dependencies for other runtimes support -->
-		<dependency>
-			<groupId>io.projectreactor</groupId>
-			<artifactId>reactor-net</artifactId>
-			<version>${reactor.version}</version>
-			<optional>true</optional>
-		</dependency>
 		<dependency>
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-netty</artifactId>

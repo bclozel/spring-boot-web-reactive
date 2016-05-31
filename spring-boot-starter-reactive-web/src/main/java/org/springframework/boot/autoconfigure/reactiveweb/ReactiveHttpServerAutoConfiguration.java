@@ -1,8 +1,7 @@
 package org.springframework.boot.autoconfigure.reactiveweb;
 
-import io.netty.buffer.UnpooledByteBufAllocator;
 import io.reactivex.netty.protocol.http.server.HttpServerImpl;
-import reactor.io.net.http.HttpServer;
+import reactor.io.netty.http.HttpServer;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.embedded.JettyEmbeddedHttpServerFactory;
