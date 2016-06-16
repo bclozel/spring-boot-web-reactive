@@ -60,6 +60,7 @@
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-netty</artifactId>
 			<version>${reactor.version}</version>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
