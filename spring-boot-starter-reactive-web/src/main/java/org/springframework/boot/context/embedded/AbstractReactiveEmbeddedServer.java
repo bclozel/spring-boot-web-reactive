@@ -16,22 +16,41 @@
 package org.springframework.boot.context.embedded;
 
 import org.springframework.http.server.reactive.HttpHandler;
+import org.springframework.util.SocketUtils;
 
-/**
- * @author Dave Syer
- */
-public class RxNettyEmbeddedHttpServerFactory implements ReactiveHttpServerFactory {
+public abstract class AbstractReactiveEmbeddedServer {
 
-	@Override
-	public ReactiveEmbeddedHttpServer getReactiveHttpServer(HttpHandler httpHandler) {
-		RxNettyEmbeddedHttpServer server = new RxNettyEmbeddedHttpServer();
-		server.setHandler(httpHandler);
-		server.setPort(8080);
-		try {
-			server.afterPropertiesSet();
-		} catch(Exception exc) {
-			throw new RuntimeException(exc);
-		}
-		return server;
+	private String host = "0.0.0.0";
+
+	private int port = -1;
+
+	private HttpHandler httpHandler;
+
+	public void setHost(String host) {
+		this.host = host;
 	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	public int getPort() {
+		if (this.port == -1) {
+			this.port = SocketUtils.findAvailableTcpPort(8080);
+		}
+		return this.port;
+	}
+
+	public void setHandler(HttpHandler handler) {
+		this.httpHandler = handler;
+	}
+
+	public HttpHandler getHttpHandler() {
+		return this.httpHandler;
+	}
+
 }
