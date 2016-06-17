@@ -15,18 +15,7 @@
  */
 package org.springframework.boot.autoconfigure.reactiveweb;
 
-import io.reactivex.netty.protocol.http.server.HttpServerImpl;
-import reactor.io.netty.http.HttpServer;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
-import org.springframework.boot.context.embedded.JettyEmbeddedHttpServerFactory;
-import org.springframework.boot.context.embedded.ReactiveHttpServerFactory;
-import org.springframework.boot.context.embedded.ReactorEmbeddedHttpServerFactory;
-import org.springframework.boot.context.embedded.RxNettyEmbeddedHttpServerFactory;
-import org.springframework.boot.context.embedded.TomcatEmbeddedHttpServerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.server.reactive.HttpHandler;
@@ -36,51 +25,11 @@ import org.springframework.web.reactive.DispatcherHandler;
  * @author Brian Clozel
  */
 @Configuration
-@ConditionalOnClass({DispatcherHandler.class, HttpHandler.class})
+@ConditionalOnClass({ DispatcherHandler.class, HttpHandler.class })
+@Import({ ReactiveHttpServerConfiguration.TomcatAutoConfiguration.class,
+		ReactiveHttpServerConfiguration.JettyAutoConfiguration.class,
+		ReactiveHttpServerConfiguration.ReactorAutoConfiguration.class,
+		ReactiveHttpServerConfiguration.RxNettyAutoConfiguration.class })
 public class ReactiveHttpServerAutoConfiguration {
-
-	@Configuration
-	@ConditionalOnMissingBean(ReactiveHttpServerFactory.class)
-	@ConditionalOnClass({org.apache.catalina.startup.Tomcat.class})
-	public static class TomcatAutoConfiguration {
-		@Bean
-		public TomcatEmbeddedHttpServerFactory tomcatEmbeddedHttpServerFactory() {
-			return new TomcatEmbeddedHttpServerFactory();
-		}
-	}
-
-	@Configuration
-	@ConditionalOnMissingBean(ReactiveHttpServerFactory.class)
-	@ConditionalOnClass({org.eclipse.jetty.server.Server.class})
-	@Import(TomcatAutoConfiguration.class)
-	public static class JettyAutoConfiguration {
-		@Bean
-		public JettyEmbeddedHttpServerFactory jettyEmbeddedHttpServerFactory() {
-			return new JettyEmbeddedHttpServerFactory();
-		}
-	}
-
-	@Configuration
-	@ConditionalOnMissingBean(ReactiveHttpServerFactory.class)
-	@ConditionalOnClass({HttpServer.class})
-	@Import(JettyAutoConfiguration.class)
-	public static class ReactorAutoConfiguration {
-		@Bean
-		public ReactorEmbeddedHttpServerFactory reactorEmbeddedHttpServerFactory() {
-			return new ReactorEmbeddedHttpServerFactory();
-		}
-	}
-
-	@Configuration
-	@ConditionalOnMissingBean(ReactiveHttpServerFactory.class)
-	@ConditionalOnClass({HttpServerImpl.class})
-	@Import(ReactorAutoConfiguration.class)
-	public static class RxNettyAutoConfiguration {
-		@Bean
-		public RxNettyEmbeddedHttpServerFactory rxNettyEmbeddedHttpServerFactory() {
-			return new RxNettyEmbeddedHttpServerFactory();
-		}
-	}
-
 
 }
