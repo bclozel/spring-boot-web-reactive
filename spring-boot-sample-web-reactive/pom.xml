@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-sample-web-reactive</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Sample project for Spring Boot Web Reactive</name>
+	<description>Sample project for Spring Boot Web Reactive</description>
+
+	<parent>
+		<groupId>org.springframework.boot.experimental</groupId>
+		<artifactId>spring-boot-web-reactive</artifactId>
+		<relativePath>../</relativePath>
+		<version>0.1.0.BUILD-SNAPSHOT</version>
+	</parent>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot.experimental</groupId>
+			<artifactId>spring-boot-starter-web-reactive</artifactId>
+			<version>0.1.0.BUILD-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-core</artifactId>
+			<version>2.5.0.BUILD-SNAPSHOT</version>
+		</dependency>
+
+		<!-- uncomment next section to use reactor-netty -->
+		<!--
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web-reactive</artifactId>
+			<version>2.0.0.ALPHA-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-netty</artifactId>
+			<version>${reactor.version}</version>
+		</dependency>
+		-->
+
+		<!-- uncomment next section to use Jetty runtime -->
+		<!--
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web-reactive</artifactId>
+			<version>2.0.0.ALPHA-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-servlet</artifactId>
+			<version>${jetty.version}</version>
+		</dependency>
+		-->
+
+		<!-- Using Reactor Netty HTTP client in tests -->
+		<dependency>
+			<groupId>io.projectreactor</groupId>
+			<artifactId>reactor-netty</artifactId>
+			<version>2.5.0.BUILD-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+</project>

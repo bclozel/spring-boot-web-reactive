@@ -1,4 +1,5 @@
-package org.springframework.test;
+package sample.web.reactive;
+
 
 import reactor.core.publisher.Mono;
 
@@ -10,6 +11,6 @@ public class HomeController {
 
 	@RequestMapping(value = "/")
 	public Mono<BootStarter> starter() {
-		return Mono.just(new BootStarter("spring-boot-starter-reactive-web", "Spring Boot Reactive Web"));
+		return Mono.just(new BootStarter("spring-boot-starter-web-reactive", "Spring Boot Web Reactive"));
 	}
 }

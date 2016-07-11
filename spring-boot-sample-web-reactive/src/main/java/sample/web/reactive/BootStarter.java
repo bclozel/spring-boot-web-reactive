@@ -1,4 +1,4 @@
-package org.springframework.test;
+package sample.web.reactive;
 
 /**
  * @author Brian Clozel
