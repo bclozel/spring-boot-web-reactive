@@ -3,13 +3,6 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.springframework.boot</groupId>
-	<artifactId>spring-boot-sample-web-reactive</artifactId>
-	<packaging>jar</packaging>
-
-	<name>Sample project for Spring Boot Web Reactive</name>
-	<description>Sample project for Spring Boot Web Reactive</description>
-
 	<parent>
 		<groupId>org.springframework.boot.experimental</groupId>
 		<artifactId>spring-boot-web-reactive</artifactId>
@@ -17,11 +10,14 @@
 		<version>0.1.0.BUILD-SNAPSHOT</version>
 	</parent>
 
+	<artifactId>spring-boot-sample-web-reactive</artifactId>
+	<name>Sample project for Spring Boot Web Reactive</name>
+	<description>Sample project for Spring Boot Web Reactive</description>
+
 	<properties>
 		<spring.version>5.0.0.BUILD-SNAPSHOT</spring.version>
 		<reactor.version>2.5.0.BUILD-SNAPSHOT</reactor.version>
 	</properties>
-
 
 	<dependencies>
 		<dependency>
