@@ -25,7 +25,6 @@
 		<dependency>
 			<groupId>org.springframework.boot.experimental</groupId>
 			<artifactId>spring-boot-autoconfigure-web-reactive</artifactId>
-			<version>0.1.0.BUILD-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -34,6 +33,12 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<!-- TODO this shouldn't be there -->
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-buffer</artifactId>
+			<version>4.1.0.Final</version>
 		</dependency>
 
 	</dependencies>

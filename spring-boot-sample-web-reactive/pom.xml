@@ -16,14 +16,14 @@
 
 	<properties>
 		<spring.version>5.0.0.BUILD-SNAPSHOT</spring.version>
-		<reactor.version>2.5.0.BUILD-SNAPSHOT</reactor.version>
+		<reactor.version>3.0.0.BUILD-SNAPSHOT</reactor.version>
+		<reactor-netty.version>0.5.0.BUILD-SNAPSHOT</reactor-netty.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot.experimental</groupId>
 			<artifactId>spring-boot-starter-web-reactive</artifactId>
-			<version>0.1.0.BUILD-SNAPSHOT</version>
 		</dependency>
 
 		<!-- uncomment next section to use reactor-netty -->
@@ -42,7 +42,7 @@
 		<dependency>
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-netty</artifactId>
-			<version>${reactor.version}</version>
+			<version>${reactor-netty.version}</version>
 		</dependency>
 		-->
 
@@ -75,7 +75,13 @@
 		<dependency>
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-netty</artifactId>
-			<version>2.5.0.BUILD-SNAPSHOT</version>
+			<version>${reactor-netty.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+			<version>4.1.0.Final</version>
 			<scope>test</scope>
 		</dependency>
 

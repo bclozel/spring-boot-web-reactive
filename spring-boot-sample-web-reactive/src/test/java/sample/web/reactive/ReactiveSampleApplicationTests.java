@@ -3,7 +3,7 @@ package sample.web.reactive;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.web.client.reactive.ClientWebRequestBuilders.get;
 import static org.springframework.web.client.reactive.ResponseExtractors.response;
-import static reactor.core.test.TestSubscriber.*;
+import static reactor.test.TestSubscriber.*;
 
 import org.junit.Before;
 import org.junit.Test;
