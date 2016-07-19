@@ -1,14 +1,18 @@
 package sample.web.reactive;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.springframework.web.client.reactive.ClientWebRequestBuilders.get;
-import static org.springframework.web.client.reactive.ResponseExtractors.response;
+import static org.springframework.web.client.reactive.ClientWebRequestBuilders.*;
+import static org.springframework.web.client.reactive.ResponseExtractors.*;
 import static reactor.test.TestSubscriber.*;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import reactor.core.publisher.Mono;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.embedded.LocalServerPort;
+import org.springframework.boot.context.embedded.ReactiveServerProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +20,14 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.reactive.WebClient;
 
-import reactor.core.publisher.Mono;
-
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ReactiveSampleApplicationTests {
 
-	WebClient webClient;
+	private WebClient webClient;
+
+	@LocalServerPort
+	private int port;
 
 	@Before
 	public void setup() {
@@ -33,7 +38,7 @@ public class ReactiveSampleApplicationTests {
 	public void homeController() {
 
 		Mono<ResponseEntity<BootStarter>> result = this.webClient
-				.perform(get("http://localhost:8080/").accept(MediaType.APPLICATION_JSON))
+				.perform(get("http://localhost:" + this.port + "/").accept(MediaType.APPLICATION_JSON))
 				.extract(response(BootStarter.class));
 
 		subscribe(result).awaitAndAssertNextValuesWith(

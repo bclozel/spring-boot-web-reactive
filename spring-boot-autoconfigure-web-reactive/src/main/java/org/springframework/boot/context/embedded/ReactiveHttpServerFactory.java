@@ -22,5 +22,6 @@ import org.springframework.http.server.reactive.HttpHandler;
  */
 public interface ReactiveHttpServerFactory {
 
-	ReactiveEmbeddedHttpServer getReactiveHttpServer(HttpHandler httpHandler);
+	EmbeddedReactiveHttpServer getReactiveHttpServer(HttpHandler httpHandler,
+			EmbeddedReactiveHttpServerCustomizer... customizers);
 }

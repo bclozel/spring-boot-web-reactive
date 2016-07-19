@@ -15,36 +15,54 @@
  */
 package org.springframework.boot.context.embedded;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.util.SocketUtils;
 
-public abstract class AbstractReactiveEmbeddedServer {
+public abstract class AbstractEmbeddedReactiveHttpServer
+		implements ConfigurableEmbeddedReactiveHttpServer, EmbeddedReactiveHttpServer {
 
-	private String host = "0.0.0.0";
+	private InetAddress address;
 
 	private int port = -1;
 
 	private HttpHandler httpHandler;
 
-	public void setHost(String host) {
-		this.host = host;
+	@Override
+	public InetAddress getAddress() {
+		if (this.address == null) {
+			try {
+				return InetAddress.getByAddress(new byte[] {0, 0, 0, 0});
+			}
+			catch (UnknownHostException e) { }
+		}
+		return this.address;
 	}
 
-	public String getHost() {
-		return host;
+	@Override
+	public void setAddress(InetAddress address) {
+		this.address = address;
 	}
 
-	public void setPort(int port) {
-		this.port = port;
-	}
-
+	@Override
 	public int getPort() {
 		if (this.port == -1) {
+			this.port = 8080;
+		}
+		if (this.port == 0) {
 			this.port = SocketUtils.findAvailableTcpPort(8080);
 		}
 		return this.port;
 	}
 
+	@Override
+	public void setPort(int port) {
+		this.port = port;
+	}
+
+	@Override
 	public void setHandler(HttpHandler handler) {
 		this.httpHandler = handler;
 	}

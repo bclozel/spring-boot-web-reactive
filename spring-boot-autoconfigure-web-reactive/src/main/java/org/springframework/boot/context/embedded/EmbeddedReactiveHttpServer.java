@@ -15,14 +15,15 @@
  */
 package org.springframework.boot.context.embedded;
 
+import java.net.InetAddress;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.Lifecycle;
-import org.springframework.http.server.reactive.HttpHandler;
 
-public interface ReactiveEmbeddedHttpServer extends InitializingBean, Lifecycle {
+public interface EmbeddedReactiveHttpServer extends InitializingBean, Lifecycle {
+
+	InetAddress getAddress();
 
 	int getPort();
-
-	void setHandler(HttpHandler handler);
 
 }

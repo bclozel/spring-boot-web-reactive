@@ -23,13 +23,17 @@ import org.springframework.http.server.reactive.HttpHandler;
 public class RxNettyEmbeddedHttpServerFactory implements ReactiveHttpServerFactory {
 
 	@Override
-	public ReactiveEmbeddedHttpServer getReactiveHttpServer(HttpHandler httpHandler) {
-		RxNettyEmbeddedHttpServer server = new RxNettyEmbeddedHttpServer();
+	public EmbeddedReactiveHttpServer getReactiveHttpServer(HttpHandler httpHandler,
+			EmbeddedReactiveHttpServerCustomizer... customizers) {
+		RxNettyEmbeddedReactiveHttpServer server = new RxNettyEmbeddedReactiveHttpServer();
 		server.setHandler(httpHandler);
-		server.setPort(8080);
+		for (EmbeddedReactiveHttpServerCustomizer customizer : customizers) {
+			customizer.customize(server);
+		}
 		try {
 			server.afterPropertiesSet();
-		} catch(Exception exc) {
+		}
+		catch (Exception exc) {
 			throw new RuntimeException(exc);
 		}
 		return server;

@@ -21,10 +21,14 @@ public class ReactorEmbeddedHttpServerFactory implements ReactiveHttpServerFacto
 
 
 	@Override
-	public ReactiveEmbeddedHttpServer getReactiveHttpServer(HttpHandler httpHandler) {
-		ReactorEmbeddedHttpServer server = new ReactorEmbeddedHttpServer();
+	public EmbeddedReactiveHttpServer getReactiveHttpServer(HttpHandler httpHandler,
+			EmbeddedReactiveHttpServerCustomizer... customizers) {
+
+		ReactorEmbeddedReactiveHttpServer server = new ReactorEmbeddedReactiveHttpServer();
 		server.setHandler(httpHandler);
-		server.setPort(8080);
+		for (EmbeddedReactiveHttpServerCustomizer customizer : customizers) {
+			customizer.customize(server);
+		}
 		try {
 			server.afterPropertiesSet();
 		}

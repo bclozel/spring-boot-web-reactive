@@ -16,9 +16,22 @@
 package org.springframework.boot.context.embedded;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextException;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
+import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.PropertySource;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.util.StringUtils;
 
@@ -27,7 +40,7 @@ import org.springframework.util.StringUtils;
  */
 public class ReactiveWebApplicationContext extends AnnotationConfigApplicationContext {
 
-	private ReactiveEmbeddedHttpServer reactiveEmbeddedHttpServer;
+	private EmbeddedReactiveHttpServer embeddedReactiveHttpServer;
 
 	@Override
 	protected void onRefresh() throws BeansException {
@@ -44,7 +57,7 @@ public class ReactiveWebApplicationContext extends AnnotationConfigApplicationCo
 	@Override
 	protected void finishRefresh() {
 		super.finishRefresh();
-		ReactiveEmbeddedHttpServer localHttpServer = startReactiveHttpServer();
+		EmbeddedReactiveHttpServer localHttpServer = startReactiveHttpServer();
 	}
 
 	@Override
@@ -56,7 +69,10 @@ public class ReactiveWebApplicationContext extends AnnotationConfigApplicationCo
 	protected void createReactiveHttpServer() {
 		ReactiveHttpServerFactory serverFactory = getReactiveHttpServerFactory();
 		HttpHandler httpHandler = getHttpHandler();
-		this.reactiveEmbeddedHttpServer = serverFactory.getReactiveHttpServer(httpHandler);
+		Collection<EmbeddedReactiveHttpServerCustomizer> customizers = getReactiveHttpServerCustomizers();
+		this.embeddedReactiveHttpServer = serverFactory
+				.getReactiveHttpServer(httpHandler, customizers.toArray(new EmbeddedReactiveHttpServerCustomizer[0]));
+		setPortProperty(this, "local.server.port", this.embeddedReactiveHttpServer.getPort());
 		initPropertySources();
 	}
 
@@ -94,8 +110,15 @@ public class ReactiveWebApplicationContext extends AnnotationConfigApplicationCo
 		return getBeanFactory().getBean(beanNames[0], HttpHandler.class);
 	}
 
-	private ReactiveEmbeddedHttpServer startReactiveHttpServer() {
-		ReactiveEmbeddedHttpServer localServer = this.reactiveEmbeddedHttpServer;
+	protected Collection<EmbeddedReactiveHttpServerCustomizer> getReactiveHttpServerCustomizers() {
+		ArrayList<EmbeddedReactiveHttpServerCustomizer> customizers =
+				new ArrayList<>(getBeanFactory().getBeansOfType(EmbeddedReactiveHttpServerCustomizer.class).values());
+		Collections.sort(customizers, AnnotationAwareOrderComparator.INSTANCE);
+		return Collections.unmodifiableList(customizers);
+	}
+
+	private EmbeddedReactiveHttpServer startReactiveHttpServer() {
+		EmbeddedReactiveHttpServer localServer = this.embeddedReactiveHttpServer;
 		if (localServer != null) {
 			localServer.start();
 		}
@@ -103,10 +126,33 @@ public class ReactiveWebApplicationContext extends AnnotationConfigApplicationCo
 	}
 
 	private void stopReactiveHttpServer() {
-		ReactiveEmbeddedHttpServer localServer = this.reactiveEmbeddedHttpServer;
+		EmbeddedReactiveHttpServer localServer = this.embeddedReactiveHttpServer;
 		if (localServer != null) {
 			localServer.stop();
 		}
+	}
+
+	private void setPortProperty(ApplicationContext context, String propertyName,
+			int port) {
+		if (context instanceof ConfigurableApplicationContext) {
+			setPortProperty(((ConfigurableApplicationContext) context).getEnvironment(),
+					propertyName, port);
+		}
+		if (context.getParent() != null) {
+			setPortProperty(context.getParent(), propertyName, port);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void setPortProperty(ConfigurableEnvironment environment, String propertyName,
+			int port) {
+		MutablePropertySources sources = environment.getPropertySources();
+		PropertySource<?> source = sources.get("server.ports");
+		if (source == null) {
+			source = new MapPropertySource("server.ports", new HashMap<String, Object>());
+			sources.addFirst(source);
+		}
+		((Map<String, Object>) source.getSource()).put(propertyName, port);
 	}
 
 }

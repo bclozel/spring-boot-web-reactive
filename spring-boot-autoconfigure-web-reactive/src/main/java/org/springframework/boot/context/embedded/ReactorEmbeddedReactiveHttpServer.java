@@ -13,48 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.springframework.boot.context.embedded;
 
-import java.net.InetSocketAddress;
-
-import org.springframework.http.server.reactive.RxNettyHttpHandlerAdapter;
+import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.util.Assert;
 
-import io.netty.buffer.ByteBuf;
-import io.reactivex.netty.protocol.http.server.HttpServer;
-
-/**
- * @author Dave Syer
- */
-public class RxNettyEmbeddedHttpServer extends AbstractReactiveEmbeddedServer
-		implements ReactiveEmbeddedHttpServer {
-
-	private RxNettyHttpHandlerAdapter rxNettyHandler;
-
-	private io.reactivex.netty.protocol.http.server.HttpServer<ByteBuf, ByteBuf> rxNettyServer;
+public class ReactorEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveHttpServer implements EmbeddedReactiveHttpServer {
 
 	private boolean running;
+
+	private ReactorHttpHandlerAdapter reactorHandler;
+
+	private reactor.io.netty.http.HttpServer reactorServer;
+
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		Assert.notNull(getHttpHandler());
-		this.rxNettyHandler = new RxNettyHttpHandlerAdapter(getHttpHandler());
-		this.rxNettyServer = HttpServer.newServer(new InetSocketAddress(getHost(), getPort()));
+		this.reactorHandler = new ReactorHttpHandlerAdapter(getHttpHandler());
+		if (getAddress() != null) {
+			this.reactorServer = reactor.io.netty.http.HttpServer.create(getAddress().getHostAddress(), getPort());
+		}
+		else {
+			this.reactorServer = reactor.io.netty.http.HttpServer.create(getPort());
+		}
 	}
 
 	@Override
 	public void start() {
 		if (!this.running) {
-			this.running = true;
-			this.rxNettyServer.start(this.rxNettyHandler);
+			try {
+				this.reactorServer.startAndAwait(reactorHandler);
+				this.running = true;
+			}
+			catch (InterruptedException ex) {
+				throw new IllegalStateException(ex);
+			}
 		}
 	}
 
 	@Override
 	public void stop() {
 		if (this.running) {
+			this.reactorServer.shutdown();
 			this.running = false;
-			this.rxNettyServer.shutdown();
 		}
 	}
 

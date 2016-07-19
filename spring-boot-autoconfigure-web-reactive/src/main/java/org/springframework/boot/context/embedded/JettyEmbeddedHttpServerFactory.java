@@ -22,13 +22,18 @@ import org.springframework.http.server.reactive.HttpHandler;
  */
 public class JettyEmbeddedHttpServerFactory implements ReactiveHttpServerFactory {
 	@Override
-	public ReactiveEmbeddedHttpServer getReactiveHttpServer(HttpHandler httpHandler) {
-		JettyEmbeddedHttpServer server = new JettyEmbeddedHttpServer();
+	public EmbeddedReactiveHttpServer getReactiveHttpServer(HttpHandler httpHandler,
+			EmbeddedReactiveHttpServerCustomizer... customizers) {
+
+		JettyEmbeddedReactiveHttpServer server = new JettyEmbeddedReactiveHttpServer();
 		server.setHandler(httpHandler);
-		server.setPort(8080);
+		for (EmbeddedReactiveHttpServerCustomizer customizer : customizers) {
+			customizer.customize(server);
+		}
 		try {
 			server.afterPropertiesSet();
-		} catch(Exception exc) {
+		}
+		catch (Exception exc) {
 			throw new RuntimeException(exc);
 		}
 		return server;

@@ -25,8 +25,8 @@ import org.apache.catalina.startup.Tomcat;
 import org.springframework.http.server.reactive.ServletHttpHandlerAdapter;
 import org.springframework.util.Assert;
 
-public class TomcatEmbeddedHttpServer extends AbstractReactiveEmbeddedServer
-		implements ReactiveEmbeddedHttpServer {
+public class TomcatEmbeddedReactiveHttpHttpServer extends AbstractEmbeddedReactiveHttpServer
+		implements EmbeddedReactiveHttpServer {
 
 	private static AtomicInteger containerCounter = new AtomicInteger(-1);
 
@@ -37,7 +37,9 @@ public class TomcatEmbeddedHttpServer extends AbstractReactiveEmbeddedServer
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		this.tomcatServer = new Tomcat();
-		this.tomcatServer.setHostname(getHost());
+		if (getAddress() != null) {
+			this.tomcatServer.setHostname(getAddress().getHostAddress());
+		}
 		this.tomcatServer.setPort(getPort());
 
 		Assert.notNull(getHttpHandler());
@@ -88,7 +90,7 @@ public class TomcatEmbeddedHttpServer extends AbstractReactiveEmbeddedServer
 
 			@Override
 			public void run() {
-				TomcatEmbeddedHttpServer.this.tomcatServer.getServer().await();
+				TomcatEmbeddedReactiveHttpHttpServer.this.tomcatServer.getServer().await();
 			}
 
 		};

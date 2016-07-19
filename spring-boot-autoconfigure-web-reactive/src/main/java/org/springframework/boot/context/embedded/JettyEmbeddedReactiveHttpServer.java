@@ -26,8 +26,8 @@ import org.springframework.util.Assert;
 /**
  * @author Brian Clozel
  */
-public class JettyEmbeddedHttpServer extends AbstractReactiveEmbeddedServer
-		implements ReactiveEmbeddedHttpServer {
+public class JettyEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveHttpServer
+		implements EmbeddedReactiveHttpServer {
 
 	private Server jettyServer;
 
@@ -53,7 +53,9 @@ public class JettyEmbeddedHttpServer extends AbstractReactiveEmbeddedServer
 		contextHandler.addServlet(servletHolder, "/");
 
 		ServerConnector connector = new ServerConnector(this.jettyServer);
-		connector.setHost(getHost());
+		if (getAddress() != null) {
+			connector.setHost(getAddress().getHostAddress());
+		}
 		connector.setPort(getPort());
 		this.jettyServer.addConnector(connector);
 	}
