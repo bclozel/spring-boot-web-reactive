@@ -25,7 +25,7 @@ import org.apache.catalina.startup.Tomcat;
 import org.springframework.http.server.reactive.ServletHttpHandlerAdapter;
 import org.springframework.util.Assert;
 
-public class TomcatEmbeddedReactiveHttpHttpServer extends AbstractEmbeddedReactiveHttpServer
+public class TomcatEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveHttpServer
 		implements EmbeddedReactiveHttpServer {
 
 	private static AtomicInteger containerCounter = new AtomicInteger(-1);
@@ -90,7 +90,7 @@ public class TomcatEmbeddedReactiveHttpHttpServer extends AbstractEmbeddedReacti
 
 			@Override
 			public void run() {
-				TomcatEmbeddedReactiveHttpHttpServer.this.tomcatServer.getServer().await();
+				TomcatEmbeddedReactiveHttpServer.this.tomcatServer.getServer().await();
 			}
 
 		};

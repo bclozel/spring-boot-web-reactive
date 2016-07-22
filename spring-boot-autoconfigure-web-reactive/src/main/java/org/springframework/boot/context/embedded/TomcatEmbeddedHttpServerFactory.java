@@ -7,7 +7,7 @@ public class TomcatEmbeddedHttpServerFactory implements ReactiveHttpServerFactor
 	@Override
 	public EmbeddedReactiveHttpServer getReactiveHttpServer(HttpHandler httpHandler,
 			EmbeddedReactiveHttpServerCustomizer... customizers) {
-		TomcatEmbeddedReactiveHttpHttpServer server = new TomcatEmbeddedReactiveHttpHttpServer();
+		TomcatEmbeddedReactiveHttpServer server = new TomcatEmbeddedReactiveHttpServer();
 		server.setHandler(httpHandler);
 		for (EmbeddedReactiveHttpServerCustomizer customizer : customizers) {
 			customizer.customize(server);
