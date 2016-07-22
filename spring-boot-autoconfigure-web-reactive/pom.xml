@@ -20,10 +20,11 @@
 	<properties>
 		<spring.version>5.0.0.BUILD-SNAPSHOT</spring.version>
 		<reactor.version>3.0.0.BUILD-SNAPSHOT</reactor.version>
-		<reactor-netty.version>0.5.0.BUILD-SNAPSHOT</reactor-netty.version>
+		<reactor-ipc.version>0.5.0.BUILD-SNAPSHOT</reactor-ipc.version>
 		<rx-netty.version>0.5.2-SNAPSHOT</rx-netty.version>
 		<jetty.version>9.3.10.v20160621</jetty.version>
 		<tomcat.version>8.5.3</tomcat.version>
+		<undertow.version>1.4.0.CR3</undertow.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -46,9 +47,9 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>io.projectreactor</groupId>
+			<groupId>io.projectreactor.ipc</groupId>
 			<artifactId>reactor-netty</artifactId>
-			<version>${reactor-netty.version}</version>
+			<version>${reactor-ipc.version}</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -71,6 +72,12 @@
 			<groupId>io.reactivex</groupId>
 			<artifactId>rxnetty-http</artifactId>
 			<version>${rx-netty.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>io.undertow</groupId>
+			<artifactId>undertow-core</artifactId>
+			<version>${undertow.version}</version>
 			<optional>true</optional>
 		</dependency>
 	</dependencies>

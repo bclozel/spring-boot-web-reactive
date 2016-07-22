@@ -1,6 +1,7 @@
 package org.springframework.boot.autoconfigure.reactiveweb;
 
 import io.reactivex.netty.protocol.http.server.HttpServerImpl;
+import io.undertow.Undertow;
 import reactor.io.netty.http.HttpServer;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -10,6 +11,7 @@ import org.springframework.boot.context.embedded.ReactiveHttpServerFactory;
 import org.springframework.boot.context.embedded.ReactorEmbeddedHttpServerFactory;
 import org.springframework.boot.context.embedded.RxNettyEmbeddedHttpServerFactory;
 import org.springframework.boot.context.embedded.TomcatEmbeddedHttpServerFactory;
+import org.springframework.boot.context.embedded.UndertowEmbeddedHttpServerFactory;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -50,6 +52,15 @@ abstract class ReactiveHttpServerConfiguration {
 		@Bean
 		public RxNettyEmbeddedHttpServerFactory rxNettyEmbeddedHttpServerFactory() {
 			return new RxNettyEmbeddedHttpServerFactory();
+		}
+	}
+
+	@ConditionalOnMissingBean(ReactiveHttpServerFactory.class)
+	@ConditionalOnClass({Undertow.class})
+	static class UndertowAutoConfiguration {
+		@Bean
+		public UndertowEmbeddedHttpServerFactory undertowEmbeddedHttpServerFactory() {
+			return new UndertowEmbeddedHttpServerFactory();
 		}
 	}
 

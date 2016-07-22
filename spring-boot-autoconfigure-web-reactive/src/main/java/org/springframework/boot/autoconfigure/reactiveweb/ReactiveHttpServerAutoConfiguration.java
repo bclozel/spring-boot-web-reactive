@@ -32,7 +32,8 @@ import org.springframework.web.reactive.DispatcherHandler;
 @Import({ReactiveHttpServerConfiguration.TomcatAutoConfiguration.class,
 		ReactiveHttpServerConfiguration.JettyAutoConfiguration.class,
 		ReactiveHttpServerConfiguration.ReactorAutoConfiguration.class,
-		ReactiveHttpServerConfiguration.RxNettyAutoConfiguration.class})
+		ReactiveHttpServerConfiguration.RxNettyAutoConfiguration.class,
+		ReactiveHttpServerConfiguration.UndertowAutoConfiguration.class})
 public class ReactiveHttpServerAutoConfiguration {
 
 }
