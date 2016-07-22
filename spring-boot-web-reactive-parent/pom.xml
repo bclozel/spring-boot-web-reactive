@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot.experimental</groupId>
+		<artifactId>spring-boot-dependencies-web-reactive</artifactId>
+		<version>0.1.0.BUILD-SNAPSHOT</version>
+		<relativePath>../spring-boot-dependencies-web-reactive</relativePath>
+	</parent>
+	<artifactId>spring-boot-web-reactive-parent</artifactId>
+	<packaging>pom</packaging>
+	<name>Spring Boot Web Reactive Parent</name>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<includes>
+						<include>**/*Tests.java</include>
+					</includes>
+					<excludes>
+						<exclude>**/Abstract*.java</exclude>
+					</excludes>
+					<systemPropertyVariables>
+						<java.security.egd>file:/dev/./urandom</java.security.egd>
+						<java.awt.headless>true</java.awt.headless>
+					</systemPropertyVariables>
+					<argLine>-Xmx1024m</argLine>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>repositories</id>
+			<activation>
+				<property>
+					<name>!skip-repositories</name>
+				</property>
+			</activation>
+			<repositories>
+				<repository>
+					<id>spring-snapshots</id>
+					<url>http://repo.spring.io/snapshot</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>oss-jfrog-snapshots</id>
+					<url>https://oss.jfrog.org/libs-snapshot</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>spring-milestone</id>
+					<url>http://repo.spring.io/milestone</url>
+				</repository>
+			</repositories>
+		</profile>
+	</profiles>
+
+</project>

@@ -4,11 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot.experimental</groupId>
-		<artifactId>spring-boot-web-reactive</artifactId>
+		<artifactId>spring-boot-web-reactive-parent</artifactId>
 		<version>0.1.0.BUILD-SNAPSHOT</version>
-		<relativePath>../</relativePath> <!-- lookup parent from repository -->
+		<relativePath>../spring-boot-web-reactive-parent</relativePath>
 	</parent>
-
 	<artifactId>spring-boot-autoconfigure-web-reactive</artifactId>
 	<name>Spring Boot Web Reactive Auto-Configuration</name>
 	<description>Spring Boot Web Reactive Auto-Configuration</description>
@@ -17,20 +16,10 @@
 		<name>Pivotal Software, Inc.</name>
 		<url>http://www.spring.io</url>
 	</organization>
-	<properties>
-		<spring.version>5.0.0.BUILD-SNAPSHOT</spring.version>
-		<reactor.version>3.0.0.BUILD-SNAPSHOT</reactor.version>
-		<reactor-ipc.version>0.5.0.BUILD-SNAPSHOT</reactor-ipc.version>
-		<rx-netty.version>0.5.2-SNAPSHOT</rx-netty.version>
-		<jetty.version>9.3.10.v20160621</jetty.version>
-		<tomcat.version>8.5.3</tomcat.version>
-		<undertow.version>1.4.0.CR3</undertow.version>
-	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web-reactive</artifactId>
-			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -49,7 +38,6 @@
 		<dependency>
 			<groupId>io.projectreactor.ipc</groupId>
 			<artifactId>reactor-netty</artifactId>
-			<version>${reactor-ipc.version}</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
@@ -65,19 +53,16 @@
 		<dependency>
 			<groupId>io.reactivex</groupId>
 			<artifactId>rxnetty-common</artifactId>
-			<version>${rx-netty.version}</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>io.reactivex</groupId>
 			<artifactId>rxnetty-http</artifactId>
-			<version>${rx-netty.version}</version>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>io.undertow</groupId>
 			<artifactId>undertow-core</artifactId>
-			<version>${undertow.version}</version>
 			<optional>true</optional>
 		</dependency>
 	</dependencies>

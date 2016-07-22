@@ -4,11 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot.experimental</groupId>
-		<artifactId>spring-boot-web-reactive</artifactId>
+		<artifactId>spring-boot-web-reactive-parent</artifactId>
 		<version>0.1.0.BUILD-SNAPSHOT</version>
-		<relativePath>../</relativePath> <!-- lookup parent from repository -->
+		<relativePath>../spring-boot-web-reactive-parent</relativePath>
 	</parent>
-
 	<artifactId>spring-boot-starter-web-reactive</artifactId>
 	<name>Spring Boot Web Reactive Starter</name>
 	<description>Spring Boot Web Reactive Starter</description>
@@ -34,12 +33,5 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
-		<!-- TODO this shouldn't be there -->
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-buffer</artifactId>
-			<version>4.1.0.Final</version>
-		</dependency>
-
 	</dependencies>
 </project>
