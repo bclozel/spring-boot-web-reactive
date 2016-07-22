@@ -51,6 +51,7 @@ public class RxNettyEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveH
 		if (!this.running) {
 			this.running = true;
 			this.rxNettyServer.start(this.rxNettyHandler);
+			startDaemonAwaitThread();
 		}
 	}
 
@@ -65,5 +66,18 @@ public class RxNettyEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveH
 	@Override
 	public boolean isRunning() {
 		return this.running;
+	}
+
+	private void startDaemonAwaitThread() {
+		Thread awaitThread = new Thread("container-1") {
+			@Override
+			public void run() {
+				RxNettyEmbeddedReactiveHttpServer.this.rxNettyServer.awaitShutdown();
+			}
+
+		};
+		awaitThread.setContextClassLoader(getClass().getClassLoader());
+		awaitThread.setDaemon(false);
+		awaitThread.start();
 	}
 }
