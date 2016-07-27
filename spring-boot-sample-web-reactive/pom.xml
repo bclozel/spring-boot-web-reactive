@@ -114,7 +114,7 @@
 
 		<!-- Using Reactor Netty HTTP client in tests -->
 		<dependency>
-			<groupId>io.projectreactor</groupId>
+			<groupId>io.projectreactor.ipc</groupId>
 			<artifactId>reactor-netty</artifactId>
 			<version>${reactor-netty.version}</version>
 			<scope>test</scope>

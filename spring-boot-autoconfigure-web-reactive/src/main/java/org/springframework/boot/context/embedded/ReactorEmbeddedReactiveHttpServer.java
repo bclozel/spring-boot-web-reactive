@@ -25,7 +25,7 @@ public class ReactorEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveH
 
 	private ReactorHttpHandlerAdapter reactorHandler;
 
-	private reactor.io.netty.http.HttpServer reactorServer;
+	private reactor.ipc.netty.http.HttpServer reactorServer;
 
 
 	@Override
@@ -33,10 +33,10 @@ public class ReactorEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveH
 		Assert.notNull(getHttpHandler());
 		this.reactorHandler = new ReactorHttpHandlerAdapter(getHttpHandler());
 		if (getAddress() != null) {
-			this.reactorServer = reactor.io.netty.http.HttpServer.create(getAddress().getHostAddress(), getPort());
+			this.reactorServer = reactor.ipc.netty.http.HttpServer.create(getAddress().getHostAddress(), getPort());
 		}
 		else {
-			this.reactorServer = reactor.io.netty.http.HttpServer.create(getPort());
+			this.reactorServer = reactor.ipc.netty.http.HttpServer.create(getPort());
 		}
 	}
 
