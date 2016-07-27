@@ -2,23 +2,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<parent>
 		<groupId>org.springframework.boot.experimental</groupId>
-		<artifactId>spring-boot-web-reactive</artifactId>
-		<relativePath>../</relativePath>
+		<artifactId>spring-boot-web-reactive-parent</artifactId>
 		<version>0.1.0.BUILD-SNAPSHOT</version>
+		<relativePath>../spring-boot-web-reactive-parent</relativePath>
 	</parent>
-
 	<artifactId>spring-boot-sample-web-reactive</artifactId>
 	<name>Sample project for Spring Boot Web Reactive</name>
-	<description>Sample project for Spring Boot Web Reactive</description>
-
-	<properties>
-		<spring.version>5.0.0.BUILD-SNAPSHOT</spring.version>
-		<reactor.version>3.0.0.BUILD-SNAPSHOT</reactor.version>
-		<reactor-netty.version>0.5.0.BUILD-SNAPSHOT</reactor-netty.version>
-	</properties>
+	<description>Spring Boot Web Reactive Sample</description>
 
 	<dependencies>
 		<dependency>
@@ -41,7 +33,6 @@
 		<dependency>
 			<groupId>io.projectreactor.ipc</groupId>
 			<artifactId>reactor-netty</artifactId>
-			<version>${reactor-netty.version}</version>
 		</dependency>
 		-->
 
@@ -60,12 +51,10 @@
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
-			<version>${jetty.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-servlet</artifactId>
-			<version>${jetty.version}</version>
 		</dependency>
 		-->
 
@@ -84,12 +73,10 @@
 		<dependency>
 			<groupId>io.reactivex</groupId>
 			<artifactId>rxnetty-common</artifactId>
-			<version>0.5.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>io.reactivex</groupId>
 			<artifactId>rxnetty-http</artifactId>
-			<version>0.5.2-SNAPSHOT</version>
 		</dependency>
 		-->
 
@@ -108,27 +95,23 @@
 		<dependency>
 			<groupId>io.undertow</groupId>
 			<artifactId>undertow-core</artifactId>
-			<version>1.4.0.CR3</version>
 		</dependency>
 		-->
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 		<!-- Using Reactor Netty HTTP client in tests -->
 		<dependency>
 			<groupId>io.projectreactor.ipc</groupId>
 			<artifactId>reactor-netty</artifactId>
-			<version>${reactor-netty.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.netty</groupId>
 			<artifactId>netty-all</artifactId>
-			<version>4.1.0.Final</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
