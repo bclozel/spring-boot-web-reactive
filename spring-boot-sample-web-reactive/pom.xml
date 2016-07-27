@@ -21,7 +21,7 @@
 		<!-- uncomment next section to use reactor-netty -->
 		<!--
 		<dependency>
-			<groupId>org.springframework.boot</groupId>
+			<groupId>org.springframework.boot.experimental</groupId>
 			<artifactId>spring-boot-starter-web-reactive</artifactId>
 			<exclusions>
 				<exclusion>
