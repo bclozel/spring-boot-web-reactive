@@ -14,7 +14,7 @@ From there you can take a look at [spring-boot-sample-web-reactive](spring-boot-
 By default this Boot Starter uses embedded Tomcat as the default server runtime.
 
 Switching the server is easy. Simply exclude the Tomcat
-starter and add the one you want as shown here with with
+starter and add the dependency you want as shown here with
 [Reactor Netty](https://github.com/reactor/reactor-ipc):
 
 ```xml
