@@ -7,15 +7,14 @@ This experimental project provides a simple way to try the new
 
 Go to [start.spring.io](https://start.spring.io), set the Spring Boot version to 1.4+ and add the "Reactive Web" starter.
 
-From there you can take a look at the `spring-boot-sample-web-reactive` sample application inside this repository to see
-a few examples of Controllers, `WebClient` usage, etc.
+From there you can take a look at [spring-boot-sample-web-reactive](spring-boot-sample-web-reactive) in this repository to see examples of reactive `@Controller`s and the reactive `WebClient` in use.
 
-## Web Server Runtime
+## Server Runtime
 
-By default, this Boot Starter brings Embedded Tomcat as the default Web runtime.
+By default this Boot Starter uses embedded Tomcat as the default server runtime.
 
-Choosing a different one is really easy, you just need to exclude the Tomcat
-starter from the reactive starter dependency and add the one you want - here,
+Switching the server is easy. Simply exclude the Tomcat
+starter and add the dependency you want as shown here with
 [Reactor Netty](https://github.com/reactor/reactor-ipc):
 
 ```xml
@@ -35,7 +34,7 @@ starter from the reactive starter dependency and add the one you want - here,
 </dependency>
 ```
 
-Doing the same with Gradle, for [RxNetty](https://github.com/ReactiveX/RxNetty):
+An example of the same in Gradle and a switch to [RxNetty](https://github.com/ReactiveX/RxNetty):
 
 ```groovy
 compile('org.springframework.boot.experimental:spring-boot-starter-web-reactive') {
@@ -45,7 +44,8 @@ compile "io.reactivex:rxnetty-common"
 compile "io.reactivex:rxnetty-http"
 ```
 
-Here are all the supported runtime (check out the sample project build to see the dependencies):
+Below are the supported server runtimes. For the exact dependencies check out
+the [sample project build](https://github.com/bclozel/spring-boot-web-reactive/blob/master/spring-boot-sample-web-reactive/pom.xml):
 
 * Reactor Netty
 * Tomcat
@@ -53,11 +53,11 @@ Here are all the supported runtime (check out the sample project build to see th
 * RxNetty
 * Undertow
 
-## Web Client Runtime
+## `WebClient` Dependencies
 
-Spring Web Reactive also provides a new reactive `WebClient`.
-For now, only the Reactor Netty implementation is provided, but other variants should
-be introduced in Spring Framework (such as RxNetty and Jetty).
+Spring Framework 5 also provides a reactive `WebClient`.
+For now the only supported HTTP client is Reactor Nett.
+Other HTTP clients such as Jetty and RxNetty will be added in the next milestone.
 
 ## Resources
 
