@@ -25,7 +25,7 @@
 		<reactor.version>3.0.0.RC1</reactor.version>
 		<reactor-ipc.version>0.5.0.M2</reactor-ipc.version>
 		<rx-netty.version>0.5.2-rc.3</rx-netty.version>
-		<spring.version>5.0.0.BUILD-SNAPSHOT</spring.version>
+		<spring.version>5.0.0.M1</spring.version>
 		<undertow.version>1.4.0.CR3</undertow.version>
 	</properties>
 

@@ -56,7 +56,7 @@ the [sample project build](https://github.com/bclozel/spring-boot-web-reactive/b
 ## `WebClient` Dependencies
 
 Spring Framework 5 also provides a reactive `WebClient`.
-For now the only supported HTTP client is Reactor Nett.
+For now the only supported HTTP client is Reactor Netty.
 Other HTTP clients such as Jetty and RxNetty will be added in the next milestone.
 
 ## Resources
