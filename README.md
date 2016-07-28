@@ -34,7 +34,7 @@ starter and add the dependency you want as shown here with
 </dependency>
 ```
 
-An example of the same in Gradle switching to [RxNetty](https://github.com/ReactiveX/RxNetty):
+An example of the same in Gradle and a switch to [RxNetty](https://github.com/ReactiveX/RxNetty):
 
 ```groovy
 compile('org.springframework.boot.experimental:spring-boot-starter-web-reactive') {
@@ -44,7 +44,7 @@ compile "io.reactivex:rxnetty-common"
 compile "io.reactivex:rxnetty-http"
 ```
 
-These are the supported server runtimes. For the exact dependencies check out
+Below are the supported server runtimes. For the exact dependencies check out
 the [sample project build](https://github.com/bclozel/spring-boot-web-reactive/blob/master/spring-boot-sample-web-reactive/pom.xml):
 
 * Reactor Netty
