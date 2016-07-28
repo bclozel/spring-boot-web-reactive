@@ -4,9 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot.experimental</groupId>
-		<artifactId>spring-boot-web-reactive-parent</artifactId>
+		<artifactId>spring-boot-web-reactive-build</artifactId>
 		<version>0.1.0.BUILD-SNAPSHOT</version>
-		<relativePath>../spring-boot-web-reactive-parent</relativePath>
+		<relativePath>../spring-boot-web-reactive-build</relativePath>
 	</parent>
 	<artifactId>spring-boot-sample-web-reactive</artifactId>
 	<name>Sample project for Spring Boot Web Reactive</name>

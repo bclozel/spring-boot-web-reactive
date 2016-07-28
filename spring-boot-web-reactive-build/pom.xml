@@ -8,9 +8,9 @@
 		<version>0.1.0.BUILD-SNAPSHOT</version>
 		<relativePath>../spring-boot-dependencies-web-reactive</relativePath>
 	</parent>
-	<artifactId>spring-boot-web-reactive-parent</artifactId>
+	<artifactId>spring-boot-web-reactive-build</artifactId>
 	<packaging>pom</packaging>
-	<name>Spring Boot Web Reactive Parent</name>
+	<name>Spring Boot Web Reactive Build</name>
 
 	<properties>
 		<java.version>1.8</java.version>
