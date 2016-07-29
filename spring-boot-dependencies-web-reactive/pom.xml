@@ -123,4 +123,35 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<profiles>
+		<profile>
+			<id>repositories</id>
+			<activation>
+				<property>
+					<name>!skip-repositories</name>
+				</property>
+			</activation>
+			<repositories>
+				<repository>
+					<id>spring-snapshots</id>
+					<url>http://repo.spring.io/snapshot</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>oss-jfrog-snapshots</id>
+					<url>https://oss.jfrog.org/libs-snapshot</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</repository>
+				<repository>
+					<id>spring-milestone</id>
+					<url>http://repo.spring.io/milestone</url>
+				</repository>
+			</repositories>
+		</profile>
+	</profiles>
+
 </project>
