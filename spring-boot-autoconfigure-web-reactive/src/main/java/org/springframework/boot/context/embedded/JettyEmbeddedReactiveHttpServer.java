@@ -44,8 +44,7 @@ public class JettyEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveHtt
 		this.jettyServer = new Server();
 
 		Assert.notNull(getHttpHandler());
-		ServletHttpHandlerAdapter servlet = new ServletHttpHandlerAdapter();
-		servlet.setHandler(getHttpHandler());
+		ServletHttpHandlerAdapter servlet = new ServletHttpHandlerAdapter(getHttpHandler());
 		ServletHolder servletHolder = new ServletHolder(servlet);
 
 		ServletContextHandler contextHandler = new ServletContextHandler(this.jettyServer,

@@ -3,16 +3,14 @@ package sample.web.reactive;
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.web.client.reactive.ClientWebRequestBuilders.*;
 import static org.springframework.web.client.reactive.ResponseExtractors.*;
-import static reactor.test.TestSubscriber.*;
+import static sample.web.reactive.TestSubscriber.subscribe;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import reactor.core.publisher.Mono;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.LocalServerPort;
-import org.springframework.boot.context.embedded.ReactiveServerProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
