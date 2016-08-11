@@ -24,6 +24,17 @@
                     <groupId>org.springframework.boot.experimental</groupId>
                     <artifactId>spring-boot-starter-web-reactive</artifactId>
                 </dependency>
+				<!-- Using Reactor Netty HTTP client in tests -->
+				<dependency>
+					<groupId>io.projectreactor.ipc</groupId>
+					<artifactId>reactor-netty</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-all</artifactId>
+					<scope>test</scope>
+				</dependency>
             </dependencies>
         </profile>
 
@@ -68,6 +79,17 @@
                     <groupId>org.eclipse.jetty</groupId>
                     <artifactId>jetty-servlet</artifactId>
                 </dependency>
+				<!-- Using Reactor Netty HTTP client in tests -->
+				<dependency>
+					<groupId>io.projectreactor.ipc</groupId>
+					<artifactId>reactor-netty</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-all</artifactId>
+					<scope>test</scope>
+				</dependency>
             </dependencies>
         </profile>
 
@@ -92,6 +114,17 @@
                     <groupId>io.reactivex</groupId>
                     <artifactId>rxnetty-http</artifactId>
                 </dependency>
+				<!-- Using Reactor Netty HTTP client in tests -->
+				<dependency>
+					<groupId>io.projectreactor.ipc</groupId>
+					<artifactId>reactor-netty</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-all</artifactId>
+					<scope>test</scope>
+				</dependency>
             </dependencies>
         </profile>
 
@@ -112,6 +145,17 @@
                     <groupId>io.undertow</groupId>
                     <artifactId>undertow-core</artifactId>
                 </dependency>
+				<!-- Using Reactor Netty HTTP client in tests -->
+				<dependency>
+					<groupId>io.projectreactor.ipc</groupId>
+					<artifactId>reactor-netty</artifactId>
+					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>io.netty</groupId>
+					<artifactId>netty-all</artifactId>
+					<scope>test</scope>
+				</dependency>
             </dependencies>
         </profile>
     </profiles>
@@ -121,17 +165,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<!-- Using Reactor Netty HTTP client in tests -->
-		<dependency>
-			<groupId>io.projectreactor.ipc</groupId>
-			<artifactId>reactor-netty</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-all</artifactId>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

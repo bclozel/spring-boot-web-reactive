@@ -26,7 +26,7 @@
 		<reactor-ipc.version>0.5.0.BUILD-SNAPSHOT</reactor-ipc.version>
 		<rx-netty.version>0.5.2-rc.3</rx-netty.version>
 		<spring.version>5.0.0.BUILD-SNAPSHOT</spring.version>
-		<undertow.version>1.4.0.CR3</undertow.version>
+		<undertow.version>1.4.0.CR4</undertow.version>
 	</properties>
 
 	<dependencyManagement>
@@ -119,6 +119,12 @@
 				<groupId>io.reactivex</groupId>
 				<artifactId>rxnetty-http</artifactId>
 				<version>${rx-netty.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.undertow</groupId>
+				<artifactId>undertow-core</artifactId>
+				<version>${undertow.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
