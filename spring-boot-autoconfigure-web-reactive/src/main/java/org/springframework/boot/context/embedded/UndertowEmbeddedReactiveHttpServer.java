@@ -3,7 +3,6 @@ package org.springframework.boot.context.embedded;
 import java.net.InetAddress;
 
 import io.undertow.Undertow;
-import io.undertow.server.HttpHandler;
 
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
@@ -26,7 +25,8 @@ public class UndertowEmbeddedReactiveHttpServer extends AbstractEmbeddedReactive
 	@Override
 	public void afterPropertiesSet() throws Exception {
 
-		HttpHandler handler = new UndertowHttpHandlerAdapter(getHttpHandler(), dataBufferFactory);
+		UndertowHttpHandlerAdapter handler = new UndertowHttpHandlerAdapter(getHttpHandler());
+		handler.setDataBufferFactory(dataBufferFactory);
 		this.server = Undertow.builder()
 				.addHttpListener(getPort(), determineHost()).setHandler(handler).build();
 	}
