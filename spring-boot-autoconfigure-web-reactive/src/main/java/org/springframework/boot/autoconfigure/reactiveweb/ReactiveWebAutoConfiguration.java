@@ -29,10 +29,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.web.reactive.DispatcherHandler;
-import org.springframework.web.reactive.ResponseStatusExceptionHandler;
 import org.springframework.web.reactive.config.WebReactiveConfiguration;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
+import org.springframework.web.server.handler.ResponseStatusExceptionHandler;
 
 /**
  * @author Brian Clozel
