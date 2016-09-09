@@ -30,12 +30,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.web.reactive.DispatcherHandler;
 import org.springframework.web.reactive.config.WebReactiveConfiguration;
+import org.springframework.web.reactive.result.method.HandlerMethodArgumentResolver;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 import org.springframework.web.server.handler.ResponseStatusExceptionHandler;
 
 /**
  * @author Brian Clozel
+ * @author Rob Winch
  */
 @Configuration
 @ConditionalOnClass({ DispatcherHandler.class, HttpHandler.class })
@@ -44,7 +46,19 @@ public class ReactiveWebAutoConfiguration {
 
 	@Configuration
 	public static class WebReactiveConfig extends WebReactiveConfiguration {
+		private final List<HandlerMethodArgumentResolver> argumentResolvers;
 
+		public WebReactiveConfig(
+				ObjectProvider<List<HandlerMethodArgumentResolver>> resolvers) {
+			this.argumentResolvers = resolvers.getIfAvailable();
+		}
+
+		@Override
+		protected void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+			if(this.argumentResolvers != null) {
+				resolvers.addAll(this.argumentResolvers);
+			}
+		}
 	}
 
 	@Configuration
