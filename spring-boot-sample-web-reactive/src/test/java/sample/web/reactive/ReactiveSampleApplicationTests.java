@@ -36,7 +36,7 @@ public class ReactiveSampleApplicationTests {
 	public void homeController() {
 
 		Mono<ResponseEntity<BootStarter>> result = this.webClient
-				.perform(get("http://localhost:" + this.port + "/").accept(MediaType.APPLICATION_JSON))
+				.perform(get("http://localhost:{port}/", this.port).accept(MediaType.APPLICATION_JSON))
 				.extract(response(BootStarter.class));
 
 		subscribe(result).awaitAndAssertNextValuesWith(
