@@ -50,4 +50,21 @@ public class ReactiveSampleApplicationTests {
 				}).assertComplete();
 	}
 
+	@Test
+	public void customArgument() throws Exception {
+
+		Mono<ResponseEntity<String>> result = this.webClient
+				.perform(get("http://localhost:{port}/custom-arg?content=custom-value", this.port).accept(MediaType.APPLICATION_JSON))
+				.extract(response(String.class));
+
+		subscribe(result).awaitAndAssertNextValuesWith(
+				response -> {
+					assertThat(response.getStatusCode().value()).isEqualTo(200);
+					assertThat(response.getHeaders().getContentType()).isEqualTo(MediaType.APPLICATION_JSON_UTF8);
+
+					String content = response.getBody();
+					assertThat(content).contains("custom-value");
+				}).assertComplete();
+	}
+
 }
