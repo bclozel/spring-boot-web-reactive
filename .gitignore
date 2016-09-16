@@ -6,3 +6,4 @@ bin/
 *.iml
 target/
 /spring-boot-sample-web-reactive/tomcat.*/
+.factorypath

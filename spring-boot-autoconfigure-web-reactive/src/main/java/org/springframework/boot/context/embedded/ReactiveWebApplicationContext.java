@@ -57,7 +57,7 @@ public class ReactiveWebApplicationContext extends AnnotationConfigApplicationCo
 	@Override
 	protected void finishRefresh() {
 		super.finishRefresh();
-		EmbeddedReactiveHttpServer localHttpServer = startReactiveHttpServer();
+		startReactiveHttpServer();
 	}
 
 	@Override
