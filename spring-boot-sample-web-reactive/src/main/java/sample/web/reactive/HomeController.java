@@ -13,4 +13,9 @@ public class HomeController {
 	public Mono<BootStarter> starter() {
 		return Mono.just(new BootStarter("spring-boot-starter-web-reactive", "Spring Boot Web Reactive"));
 	}
+
+	@RequestMapping(value = "/custom-arg")
+	public Mono<String> customArg(CustomArgument custom) {
+		return Mono.just(custom.getCustom());
+	}
 }
