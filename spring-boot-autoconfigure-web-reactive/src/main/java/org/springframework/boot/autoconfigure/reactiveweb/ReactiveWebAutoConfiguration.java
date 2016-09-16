@@ -45,6 +45,7 @@ import org.springframework.web.server.handler.ResponseStatusExceptionHandler;
 public class ReactiveWebAutoConfiguration {
 
 	@Configuration
+	@ConditionalOnMissingBean(WebReactiveConfiguration.class)
 	public static class WebReactiveConfig extends WebReactiveConfiguration {
 		private final List<HandlerMethodArgumentResolver> argumentResolvers;
 
