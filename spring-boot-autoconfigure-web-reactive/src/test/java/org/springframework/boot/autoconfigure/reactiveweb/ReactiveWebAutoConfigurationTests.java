@@ -22,14 +22,22 @@ import org.junit.Test;
 
 import org.springframework.boot.context.embedded.ReactiveServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.util.EnvironmentTestUtils;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.web.reactive.DispatcherHandler;
+import org.springframework.web.reactive.HandlerMapping;
 import org.springframework.web.reactive.accept.CompositeContentTypeResolver;
 import org.springframework.web.reactive.config.WebReactiveConfiguration;
+import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
+import org.springframework.web.reactive.resource.CachingResourceResolver;
+import org.springframework.web.reactive.resource.CachingResourceTransformer;
+import org.springframework.web.reactive.resource.PathResourceResolver;
+import org.springframework.web.reactive.resource.ResourceWebHandler;
 import org.springframework.web.reactive.result.method.HandlerMethodArgumentResolver;
 import org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerMapping;
@@ -55,16 +63,17 @@ public class ReactiveWebAutoConfigurationTests {
 
 	@Test
 	public void shouldCreateDefaultBeans() throws Exception {
-		this.context = new AnnotationConfigApplicationContext(BaseConfiguration.class);
+		load(BaseConfiguration.class);
 
 		assertThat(this.context.getBeansOfType(RequestMappingHandlerMapping.class).size()).isEqualTo(1);
 		assertThat(this.context.getBeansOfType(RequestMappingHandlerAdapter.class).size()).isEqualTo(1);
 		assertThat(this.context.getBeansOfType(CompositeContentTypeResolver.class).size()).isEqualTo(1);
+		assertThat(this.context.getBean("resourceHandlerMapping", HandlerMapping.class)).isNotNull();
 	}
 
 	@Test
 	public void shouldRegisterCustomHandlerMethodArgumentResolver() throws Exception {
-		this.context = new AnnotationConfigApplicationContext(CustomArgumentResolvers.class);
+		load(CustomArgumentResolvers.class);
 
 		RequestMappingHandlerAdapter adapter = this.context.getBean(RequestMappingHandlerAdapter.class);
 		assertThat(adapter.getArgumentResolvers())
@@ -74,7 +83,7 @@ public class ReactiveWebAutoConfigurationTests {
 
 	@Test
 	public void shouldRegisterSingleDispatcherHandler() throws Exception {
-		this.context = new AnnotationConfigApplicationContext(ExistingDispatcherHandler.class);
+		load(ExistingDispatcherHandler.class);
 
 		assertThat(this.context.getBeansOfType(DispatcherHandler.class).size()).isEqualTo(1);
 		assertThat(this.context.getBean("dispatcherHandler", DispatcherHandler.class)).isNotNull();
@@ -82,7 +91,7 @@ public class ReactiveWebAutoConfigurationTests {
 
 	@Test
 	public void shouldRegisterCustomWebFilters() throws Exception {
-		this.context = new AnnotationConfigApplicationContext(CustomWebFilters.class);
+		load(CustomWebFilters.class);
 
 		HttpHandler handler = this.context.getBean(HttpHandler.class);
 		assertThat(handler).isInstanceOf(WebHandler.class);
@@ -98,6 +107,56 @@ public class ReactiveWebAutoConfigurationTests {
 			webHandler = ((WebHandlerDecorator) webHandler).getDelegate();
 		}
 		fail("Did not find any FilteringWebHandler");
+	}
+
+	@Test
+	public void shouldRegisterResourceHandlerMapping() throws Exception {
+		load(BaseConfiguration.class);
+
+		SimpleUrlHandlerMapping hm = this.context.getBean("resourceHandlerMapping", SimpleUrlHandlerMapping.class);
+		assertThat(hm.getUrlMap().get("/**")).isInstanceOf(ResourceWebHandler.class);
+		ResourceWebHandler staticHandler = (ResourceWebHandler) hm.getUrlMap().get("/**");
+		assertThat(staticHandler.getLocations()).hasSize(5);
+
+		assertThat(hm.getUrlMap().get("/webjars/**")).isInstanceOf(ResourceWebHandler.class);
+		ResourceWebHandler webjarsHandler = (ResourceWebHandler) hm.getUrlMap().get("/webjars/**");
+		assertThat(webjarsHandler.getLocations()).hasSize(1);
+		assertThat(webjarsHandler.getLocations().get(0))
+				.isEqualTo(new ClassPathResource("/META-INF/resources/webjars/"));
+	}
+
+	@Test
+	public void shouldMapResourcesToCustomPath() throws Exception {
+		load(BaseConfiguration.class, "spring.reactive.static-path-pattern:/static/**");
+		SimpleUrlHandlerMapping hm = this.context.getBean("resourceHandlerMapping", SimpleUrlHandlerMapping.class);
+		assertThat(hm.getUrlMap().get("/static/**")).isInstanceOf(ResourceWebHandler.class);
+		ResourceWebHandler staticHandler = (ResourceWebHandler) hm.getUrlMap().get("/static/**");
+		assertThat(staticHandler.getLocations()).hasSize(5);
+	}
+
+	@Test
+	public void shouldNotMapResourcesWhenDisabled() throws Exception {
+		load(BaseConfiguration.class, "spring.resources.add-mappings:false");
+		assertThat(this.context.getBean("resourceHandlerMapping")).isNotInstanceOf(SimpleUrlHandlerMapping.class);
+	}
+
+	@Test
+	public void resourceHandlerChainEnabled() throws Exception {
+		load(BaseConfiguration.class, "spring.resources.chain.enabled:true");
+		SimpleUrlHandlerMapping hm = this.context.getBean("resourceHandlerMapping", SimpleUrlHandlerMapping.class);
+		assertThat(hm.getUrlMap().get("/**")).isInstanceOf(ResourceWebHandler.class);
+		ResourceWebHandler staticHandler = (ResourceWebHandler) hm.getUrlMap().get("/**");
+		assertThat(staticHandler.getResourceResolvers()).extractingResultOf("getClass")
+				.containsOnly(CachingResourceResolver.class, PathResourceResolver.class);
+		assertThat(staticHandler.getResourceTransformers()).extractingResultOf("getClass")
+				.containsOnly(CachingResourceTransformer.class);
+	}
+
+	private void load(Class<?> config, String... environment) {
+		this.context = new AnnotationConfigApplicationContext();
+		EnvironmentTestUtils.addEnvironment(this.context, environment);
+		this.context.register(config);
+		this.context.refresh();
 	}
 
 

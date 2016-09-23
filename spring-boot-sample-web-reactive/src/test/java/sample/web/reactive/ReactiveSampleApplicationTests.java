@@ -67,4 +67,20 @@ public class ReactiveSampleApplicationTests {
 				}).assertComplete();
 	}
 
+	@Test
+	public void staticResources() throws Exception {
+		Mono<ResponseEntity<String>> result = this.webClient
+				.perform(get("http://localhost:{port}/static/spring.txt", this.port).accept(MediaType.TEXT_PLAIN))
+				.extract(response(String.class));
+
+		subscribe(result).awaitAndAssertNextValuesWith(
+				response -> {
+					assertThat(response.getStatusCode().value()).isEqualTo(200);
+					assertThat(response.getHeaders().getContentType()).isEqualTo(MediaType.TEXT_PLAIN);
+
+					String content = response.getBody();
+					assertThat(content).contains("Spring Framework");
+				}).assertComplete();
+	}
+
 }
