@@ -68,6 +68,14 @@ The Spring team has published a few blog posts on the subject:
 * Notes on Reactive Programming [part I](https://spring.io/blog/2016/06/07/notes-on-reactive-programming-part-i-the-reactive-landscape),
 [part II](https://spring.io/blog/2016/06/13/notes-on-reactive-programming-part-ii-writing-some-code) and [part III](https://spring.io/blog/2016/07/20/notes-on-reactive-programming-part-iii-a-simple-http-server-application)
 
+## Supported configuration keys
+
+Configuration class | Supported properties
+------------ | -------------
+`ReactiveServerProperties` | `server.port`, `server.address`
+`ResourceProperties` | `spring.resources.*`
+`WebReactiveProperties` | `spring.reactive.static-path-pattern`
+
 ## Known issues
 
 This starter doesn't work with plain `@SpringBootTest`s (i.e. with a `WebEnvironment.MOCK`, which is the default):
