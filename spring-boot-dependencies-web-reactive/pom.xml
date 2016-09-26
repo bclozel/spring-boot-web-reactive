@@ -26,8 +26,6 @@
 		<reactor-ipc.version>0.5.1.RELEASE</reactor-ipc.version>
 		<rxjava.version>1.1.9</rxjava.version>
 		<rx-netty.version>0.5.2-rc.4</rx-netty.version>
-		<spring.version>5.0.0.M2</spring.version>
-		<undertow.version>1.4.3.Final</undertow.version>
 	</properties>
 
 	<dependencyManagement>

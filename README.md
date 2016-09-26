@@ -1,11 +1,11 @@
 # Spring Boot Web Reactive Starter
 
 This experimental project provides a simple way to try the new
-[Web Reactive support in Spring Framework 5.0](http://docs.spring.io/spring-framework/docs/5.0.0.M1/spring-framework-reference/html/web-reactive.html).
+[Web Reactive support in Spring Framework 5.0](http://docs.spring.io/spring-framework/docs/5.0.0.BUILD-SNAPSHOT/spring-framework-reference/html/web-reactive.html).
 
 ## Quickstart
 
-Go to [start.spring.io](https://start.spring.io), set the Spring Boot version to 1.4+ and add the "Reactive Web" starter.
+Go to [start.spring.io](https://start.spring.io), set the Spring Boot version to `2.0.0(SNAPSHOT)` and add the "Reactive Web" starter.
 
 From there you can take a look at [spring-boot-sample-web-reactive](spring-boot-sample-web-reactive) in this repository to see examples of reactive `@Controller`s and the reactive `WebClient` in use.
 
