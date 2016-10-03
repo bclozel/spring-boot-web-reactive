@@ -27,6 +27,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.web.reactive.DispatcherHandler;
@@ -41,6 +43,8 @@ import org.springframework.web.reactive.resource.ResourceWebHandler;
 import org.springframework.web.reactive.result.method.HandlerMethodArgumentResolver;
 import org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.reactive.result.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.reactive.result.view.ViewResolutionResultHandler;
+import org.springframework.web.reactive.result.view.ViewResolver;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebHandler;
 import org.springframework.web.server.handler.FilteringWebHandler;
@@ -99,9 +103,10 @@ public class ReactiveWebAutoConfigurationTests {
 		while (webHandler instanceof WebHandlerDecorator) {
 			if (webHandler instanceof FilteringWebHandler) {
 				FilteringWebHandler filteringWebHandler = (FilteringWebHandler) webHandler;
-				assertThat(filteringWebHandler.getFilters()).contains(
+				assertThat(filteringWebHandler.getFilters()).containsExactly(
 						this.context.getBean("firstWebFilter", WebFilter.class),
-						this.context.getBean("secondWebFilter", WebFilter.class));
+						this.context.getBean("aWebFilter", WebFilter.class),
+						this.context.getBean("lastWebFilter", WebFilter.class));
 				return;
 			}
 			webHandler = ((WebHandlerDecorator) webHandler).getDelegate();
@@ -152,6 +157,16 @@ public class ReactiveWebAutoConfigurationTests {
 				.containsOnly(CachingResourceTransformer.class);
 	}
 
+	@Test
+	public void shouldRegisterViewResolvers() throws Exception {
+		load(ViewResolvers.class);
+		ViewResolutionResultHandler resultHandler = this.context.getBean(ViewResolutionResultHandler.class);
+		assertThat(resultHandler.getViewResolvers()).containsExactly(
+				this.context.getBean("aViewResolver", ViewResolver.class),
+				this.context.getBean("anotherViewResolver", ViewResolver.class)
+		);
+	}
+
 	private void load(Class<?> config, String... environment) {
 		this.context = new AnnotationConfigApplicationContext();
 		EnvironmentTestUtils.addEnvironment(this.context, environment);
@@ -164,12 +179,19 @@ public class ReactiveWebAutoConfigurationTests {
 	protected static class CustomWebFilters extends BaseConfiguration {
 
 		@Bean
-		public WebFilter firstWebFilter() {
+		public WebFilter aWebFilter() {
 			return mock(WebFilter.class);
 		}
 
 		@Bean
-		public WebFilter secondWebFilter() {
+		@Order(Ordered.LOWEST_PRECEDENCE)
+		public WebFilter lastWebFilter() {
+			return mock(WebFilter.class);
+		}
+
+		@Bean
+		@Order(Ordered.HIGHEST_PRECEDENCE)
+		public WebFilter firstWebFilter() {
 			return mock(WebFilter.class);
 		}
 	}
@@ -197,6 +219,21 @@ public class ReactiveWebAutoConfigurationTests {
 			return mock(HandlerMethodArgumentResolver.class);
 		}
 
+	}
+
+	@Configuration
+	protected static class ViewResolvers extends BaseConfiguration {
+
+		@Bean
+		@Order(Ordered.HIGHEST_PRECEDENCE)
+		public ViewResolver aViewResolver() {
+			return mock(ViewResolver.class);
+		}
+
+		@Bean
+		public ViewResolver anotherViewResolver() {
+			return mock(ViewResolver.class);
+		}
 	}
 
 	@Configuration

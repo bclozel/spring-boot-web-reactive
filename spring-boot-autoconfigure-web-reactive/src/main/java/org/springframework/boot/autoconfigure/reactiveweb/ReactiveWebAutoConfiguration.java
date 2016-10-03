@@ -35,18 +35,21 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.http.CacheControl;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.web.reactive.DispatcherHandler;
 import org.springframework.web.reactive.config.ResourceChainRegistration;
 import org.springframework.web.reactive.config.ResourceHandlerRegistration;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
+import org.springframework.web.reactive.config.ViewResolverRegistry;
 import org.springframework.web.reactive.config.WebReactiveConfiguration;
 import org.springframework.web.reactive.resource.AppCacheManifestTransformer;
 import org.springframework.web.reactive.resource.GzipResourceResolver;
 import org.springframework.web.reactive.resource.ResourceResolver;
 import org.springframework.web.reactive.resource.VersionResourceResolver;
 import org.springframework.web.reactive.result.method.HandlerMethodArgumentResolver;
+import org.springframework.web.reactive.result.view.ViewResolver;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
 import org.springframework.web.server.handler.ResponseStatusExceptionHandler;
@@ -74,16 +77,21 @@ public class ReactiveWebAutoConfiguration {
 
 		private final List<HandlerMethodArgumentResolver> argumentResolvers;
 
-		final ResourceHandlerRegistrationCustomizer resourceHandlerRegistrationCustomizer;
+		private final ResourceHandlerRegistrationCustomizer resourceHandlerRegistrationCustomizer;
+
+		private final List<ViewResolver> viewResolvers;
+
 
 		public WebReactiveConfig(ResourceProperties resourceProperties,
 				WebReactiveProperties webReactiveProperties,
 				ObjectProvider<List<HandlerMethodArgumentResolver>> resolvers,
-				ObjectProvider<ResourceHandlerRegistrationCustomizer> resourceHandlerRegistrationCustomizerProvider) {
+				ObjectProvider<ResourceHandlerRegistrationCustomizer> resourceHandlerRegistrationCustomizerProvider,
+				ObjectProvider<List<ViewResolver>> viewResolvers) {
 			this.resourceProperties = resourceProperties;
 			this.webReactiveProperties = webReactiveProperties;
 			this.argumentResolvers = resolvers.getIfAvailable();
 			this.resourceHandlerRegistrationCustomizer = resourceHandlerRegistrationCustomizerProvider.getIfAvailable();
+			this.viewResolvers = viewResolvers.getIfAvailable();
 		}
 
 		@Override
@@ -117,6 +125,14 @@ public class ReactiveWebAutoConfiguration {
 					registration.setCacheControl(CacheControl.maxAge(cachePeriod, TimeUnit.SECONDS));
 				}
 				customizeResourceHandlerRegistration(registration);
+			}
+		}
+
+		@Override
+		protected void configureViewResolvers(ViewResolverRegistry registry) {
+			if (this.viewResolvers != null) {
+				AnnotationAwareOrderComparator.sort(this.viewResolvers);
+				this.viewResolvers.forEach(resolver -> registry.viewResolver(resolver));
 			}
 		}
 
@@ -162,6 +178,9 @@ public class ReactiveWebAutoConfiguration {
 		public WebReactiveHandlerConfiguration(
 				ObjectProvider<List<WebFilter>> webFilters) {
 			this.webFilters = webFilters.getIfAvailable();
+			if (this.webFilters != null) {
+				AnnotationAwareOrderComparator.sort(this.webFilters);
+			}
 		}
 
 		@Bean
