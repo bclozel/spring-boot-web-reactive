@@ -43,7 +43,7 @@ import org.springframework.web.reactive.config.ResourceChainRegistration;
 import org.springframework.web.reactive.config.ResourceHandlerRegistration;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.ViewResolverRegistry;
-import org.springframework.web.reactive.config.WebReactiveConfiguration;
+import org.springframework.web.reactive.config.WebReactiveConfigurationSupport;
 import org.springframework.web.reactive.resource.AppCacheManifestTransformer;
 import org.springframework.web.reactive.resource.GzipResourceResolver;
 import org.springframework.web.reactive.resource.ResourceResolver;
@@ -64,9 +64,9 @@ import org.springframework.web.server.handler.ResponseStatusExceptionHandler;
 public class ReactiveWebAutoConfiguration {
 
 	@Configuration
-	@ConditionalOnMissingBean(WebReactiveConfiguration.class)
+	@ConditionalOnMissingBean(WebReactiveConfigurationSupport.class)
 	@EnableConfigurationProperties({ResourceProperties.class, WebReactiveProperties.class})
-	public static class WebReactiveConfig extends WebReactiveConfiguration {
+	public static class WebReactiveConfig extends WebReactiveConfigurationSupport {
 
 		private static final Log logger = LogFactory
 				.getLog(WebReactiveConfig.class);
