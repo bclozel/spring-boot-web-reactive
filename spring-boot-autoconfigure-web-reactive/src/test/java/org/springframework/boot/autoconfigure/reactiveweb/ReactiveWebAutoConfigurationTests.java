@@ -59,7 +59,8 @@ public class ReactiveWebAutoConfigurationTests {
 
 	@Test
 	public void shouldNotProcessIfExistingWebReactiveConfiguration() throws Exception {
-		this.context = new AnnotationConfigApplicationContext(BaseConfiguration.class, WebReactiveConfigurationSupport.class);
+		this.context = new AnnotationConfigApplicationContext(BaseConfiguration.class,
+				WebReactiveConfigurationSupport.class);
 
 		assertThat(this.context.getBeansOfType(RequestMappingHandlerMapping.class).size()).isEqualTo(1);
 		assertThat(this.context.getBeansOfType(RequestMappingHandlerAdapter.class).size()).isEqualTo(1);
