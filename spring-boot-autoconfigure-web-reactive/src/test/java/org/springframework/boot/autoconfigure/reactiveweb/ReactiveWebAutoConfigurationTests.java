@@ -15,12 +15,10 @@
  */
 package org.springframework.boot.autoconfigure.reactiveweb;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
+import org.junit.After;
 import org.junit.Test;
-
 import org.springframework.boot.context.embedded.ReactiveServerProperties;
+import org.springframework.boot.context.embedded.ReactiveWebApplicationContext;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.util.EnvironmentTestUtils;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -50,196 +48,219 @@ import org.springframework.web.server.WebHandler;
 import org.springframework.web.server.handler.FilteringWebHandler;
 import org.springframework.web.server.handler.WebHandlerDecorator;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
+
 /**
  * @author Brian Clozel
  */
 public class ReactiveWebAutoConfigurationTests {
 
-	private AnnotationConfigApplicationContext context;
+    private AnnotationConfigApplicationContext context;
 
-	@Test
-	public void shouldNotProcessIfExistingWebReactiveConfiguration() throws Exception {
-		this.context = new AnnotationConfigApplicationContext(BaseConfiguration.class, WebReactiveConfigurationSupport.class);
+    @After
+    public void tearDown() {
+        this.context.close();
+    }
 
-		assertThat(this.context.getBeansOfType(RequestMappingHandlerMapping.class).size()).isEqualTo(1);
-		assertThat(this.context.getBeansOfType(RequestMappingHandlerAdapter.class).size()).isEqualTo(1);
-	}
+    @Test
+    public void shouldNotProcessIfWebReactiveAppContextIsMissing() throws Exception {
+        this.context = new AnnotationConfigApplicationContext(BaseConfiguration.class);
 
-	@Test
-	public void shouldCreateDefaultBeans() throws Exception {
-		load(BaseConfiguration.class);
+        assertThat(this.context.getBeansOfType(RequestMappingHandlerMapping.class).size()).isEqualTo(0);
+        assertThat(this.context.getBeansOfType(RequestMappingHandlerAdapter.class).size()).isEqualTo(0);
+    }
 
-		assertThat(this.context.getBeansOfType(RequestMappingHandlerMapping.class).size()).isEqualTo(1);
-		assertThat(this.context.getBeansOfType(RequestMappingHandlerAdapter.class).size()).isEqualTo(1);
-		assertThat(this.context.getBeansOfType(CompositeContentTypeResolver.class).size()).isEqualTo(1);
-		assertThat(this.context.getBean("resourceHandlerMapping", HandlerMapping.class)).isNotNull();
-	}
+    @Test
+    public void shouldNotProcessIfExistingWebReactiveConfiguration() throws Exception {
+        load(BaseConfiguration.class, WebReactiveConfigurationSupport.class);
 
-	@Test
-	public void shouldRegisterCustomHandlerMethodArgumentResolver() throws Exception {
-		load(CustomArgumentResolvers.class);
+        assertThat(this.context.getBeansOfType(RequestMappingHandlerMapping.class).size()).isEqualTo(1);
+        assertThat(this.context.getBeansOfType(RequestMappingHandlerAdapter.class).size()).isEqualTo(1);
+    }
 
-		RequestMappingHandlerAdapter adapter = this.context.getBean(RequestMappingHandlerAdapter.class);
-		assertThat(adapter.getArgumentResolvers())
-				.contains(this.context.getBean("firstResolver", HandlerMethodArgumentResolver.class),
-						this.context.getBean("secondResolver", HandlerMethodArgumentResolver.class));
-	}
+    @Test
+    public void shouldCreateDefaultBeans() throws Exception {
+        load(BaseConfiguration.class);
 
-	@Test
-	public void shouldRegisterSingleDispatcherHandler() throws Exception {
-		load(ExistingDispatcherHandler.class);
+        assertThat(this.context.getBeansOfType(RequestMappingHandlerMapping.class).size()).isEqualTo(1);
+        assertThat(this.context.getBeansOfType(RequestMappingHandlerAdapter.class).size()).isEqualTo(1);
+        assertThat(this.context.getBeansOfType(CompositeContentTypeResolver.class).size()).isEqualTo(1);
+        assertThat(this.context.getBean("resourceHandlerMapping", HandlerMapping.class)).isNotNull();
+    }
 
-		assertThat(this.context.getBeansOfType(DispatcherHandler.class).size()).isEqualTo(1);
-		assertThat(this.context.getBean("dispatcherHandler", DispatcherHandler.class)).isNotNull();
-	}
+    @Test
+    public void shouldRegisterCustomHandlerMethodArgumentResolver() throws Exception {
+        load(CustomArgumentResolvers.class);
 
-	@Test
-	public void shouldRegisterCustomWebFilters() throws Exception {
-		load(CustomWebFilters.class);
+        RequestMappingHandlerAdapter adapter = this.context.getBean(RequestMappingHandlerAdapter.class);
+        assertThat(adapter.getArgumentResolvers())
+                .contains(this.context.getBean("firstResolver", HandlerMethodArgumentResolver.class),
+                        this.context.getBean("secondResolver", HandlerMethodArgumentResolver.class));
+    }
 
-		HttpHandler handler = this.context.getBean(HttpHandler.class);
-		assertThat(handler).isInstanceOf(WebHandler.class);
-		WebHandler webHandler = (WebHandler) handler;
-		while (webHandler instanceof WebHandlerDecorator) {
-			if (webHandler instanceof FilteringWebHandler) {
-				FilteringWebHandler filteringWebHandler = (FilteringWebHandler) webHandler;
-				assertThat(filteringWebHandler.getFilters()).containsExactly(
-						this.context.getBean("firstWebFilter", WebFilter.class),
-						this.context.getBean("aWebFilter", WebFilter.class),
-						this.context.getBean("lastWebFilter", WebFilter.class));
-				return;
-			}
-			webHandler = ((WebHandlerDecorator) webHandler).getDelegate();
-		}
-		fail("Did not find any FilteringWebHandler");
-	}
+    @Test
+    public void shouldRegisterSingleDispatcherHandler() throws Exception {
+        load(ExistingDispatcherHandler.class);
 
-	@Test
-	public void shouldRegisterResourceHandlerMapping() throws Exception {
-		load(BaseConfiguration.class);
+        assertThat(this.context.getBeansOfType(DispatcherHandler.class).size()).isEqualTo(1);
+        assertThat(this.context.getBean("dispatcherHandler", DispatcherHandler.class)).isNotNull();
+    }
 
-		SimpleUrlHandlerMapping hm = this.context.getBean("resourceHandlerMapping", SimpleUrlHandlerMapping.class);
-		assertThat(hm.getUrlMap().get("/**")).isInstanceOf(ResourceWebHandler.class);
-		ResourceWebHandler staticHandler = (ResourceWebHandler) hm.getUrlMap().get("/**");
-		assertThat(staticHandler.getLocations()).hasSize(5);
+    @Test
+    public void shouldRegisterCustomWebFilters() throws Exception {
+        load(CustomWebFilters.class);
 
-		assertThat(hm.getUrlMap().get("/webjars/**")).isInstanceOf(ResourceWebHandler.class);
-		ResourceWebHandler webjarsHandler = (ResourceWebHandler) hm.getUrlMap().get("/webjars/**");
-		assertThat(webjarsHandler.getLocations()).hasSize(1);
-		assertThat(webjarsHandler.getLocations().get(0))
-				.isEqualTo(new ClassPathResource("/META-INF/resources/webjars/"));
-	}
+        HttpHandler handler = this.context.getBean(HttpHandler.class);
+        assertThat(handler).isInstanceOf(WebHandler.class);
+        WebHandler webHandler = (WebHandler) handler;
+        while (webHandler instanceof WebHandlerDecorator) {
+            if (webHandler instanceof FilteringWebHandler) {
+                FilteringWebHandler filteringWebHandler = (FilteringWebHandler) webHandler;
+                assertThat(filteringWebHandler.getFilters()).containsExactly(
+                        this.context.getBean("firstWebFilter", WebFilter.class),
+                        this.context.getBean("aWebFilter", WebFilter.class),
+                        this.context.getBean("lastWebFilter", WebFilter.class));
+                return;
+            }
+            webHandler = ((WebHandlerDecorator) webHandler).getDelegate();
+        }
+        fail("Did not find any FilteringWebHandler");
+    }
 
-	@Test
-	public void shouldMapResourcesToCustomPath() throws Exception {
-		load(BaseConfiguration.class, "spring.reactive.static-path-pattern:/static/**");
-		SimpleUrlHandlerMapping hm = this.context.getBean("resourceHandlerMapping", SimpleUrlHandlerMapping.class);
-		assertThat(hm.getUrlMap().get("/static/**")).isInstanceOf(ResourceWebHandler.class);
-		ResourceWebHandler staticHandler = (ResourceWebHandler) hm.getUrlMap().get("/static/**");
-		assertThat(staticHandler.getLocations()).hasSize(5);
-	}
+    @Test
+    public void shouldRegisterResourceHandlerMapping() throws Exception {
+        load(BaseConfiguration.class);
 
-	@Test
-	public void shouldNotMapResourcesWhenDisabled() throws Exception {
-		load(BaseConfiguration.class, "spring.resources.add-mappings:false");
-		assertThat(this.context.getBean("resourceHandlerMapping")).isNotInstanceOf(SimpleUrlHandlerMapping.class);
-	}
+        SimpleUrlHandlerMapping hm = this.context.getBean("resourceHandlerMapping", SimpleUrlHandlerMapping.class);
+        assertThat(hm.getUrlMap().get("/**")).isInstanceOf(ResourceWebHandler.class);
+        ResourceWebHandler staticHandler = (ResourceWebHandler) hm.getUrlMap().get("/**");
+        assertThat(staticHandler.getLocations()).hasSize(5);
 
-	@Test
-	public void resourceHandlerChainEnabled() throws Exception {
-		load(BaseConfiguration.class, "spring.resources.chain.enabled:true");
-		SimpleUrlHandlerMapping hm = this.context.getBean("resourceHandlerMapping", SimpleUrlHandlerMapping.class);
-		assertThat(hm.getUrlMap().get("/**")).isInstanceOf(ResourceWebHandler.class);
-		ResourceWebHandler staticHandler = (ResourceWebHandler) hm.getUrlMap().get("/**");
-		assertThat(staticHandler.getResourceResolvers()).extractingResultOf("getClass")
-				.containsOnly(CachingResourceResolver.class, PathResourceResolver.class);
-		assertThat(staticHandler.getResourceTransformers()).extractingResultOf("getClass")
-				.containsOnly(CachingResourceTransformer.class);
-	}
+        assertThat(hm.getUrlMap().get("/webjars/**")).isInstanceOf(ResourceWebHandler.class);
+        ResourceWebHandler webjarsHandler = (ResourceWebHandler) hm.getUrlMap().get("/webjars/**");
+        assertThat(webjarsHandler.getLocations()).hasSize(1);
+        assertThat(webjarsHandler.getLocations().get(0))
+                .isEqualTo(new ClassPathResource("/META-INF/resources/webjars/"));
+    }
 
-	@Test
-	public void shouldRegisterViewResolvers() throws Exception {
-		load(ViewResolvers.class);
-		ViewResolutionResultHandler resultHandler = this.context.getBean(ViewResolutionResultHandler.class);
-		assertThat(resultHandler.getViewResolvers()).containsExactly(
-				this.context.getBean("aViewResolver", ViewResolver.class),
-				this.context.getBean("anotherViewResolver", ViewResolver.class)
-		);
-	}
+    @Test
+    public void shouldMapResourcesToCustomPath() throws Exception {
+        load(new Class[]{BaseConfiguration.class}, new String[]{"spring.reactive.static-path-pattern:/static/**"});
+        SimpleUrlHandlerMapping hm = this.context.getBean("resourceHandlerMapping", SimpleUrlHandlerMapping.class);
+        assertThat(hm.getUrlMap().get("/static/**")).isInstanceOf(ResourceWebHandler.class);
+        ResourceWebHandler staticHandler = (ResourceWebHandler) hm.getUrlMap().get("/static/**");
+        assertThat(staticHandler.getLocations()).hasSize(5);
+    }
 
-	private void load(Class<?> config, String... environment) {
-		this.context = new AnnotationConfigApplicationContext();
-		EnvironmentTestUtils.addEnvironment(this.context, environment);
-		this.context.register(config);
-		this.context.refresh();
-	}
+    @Test
+    public void shouldNotMapResourcesWhenDisabled() throws Exception {
+        load(new Class[]{BaseConfiguration.class}, new String[]{"spring.resources.add-mappings:false"});
+        assertThat(this.context.getBean("resourceHandlerMapping")).isNotInstanceOf(SimpleUrlHandlerMapping.class);
+    }
 
+    @Test
+    public void resourceHandlerChainEnabled() throws Exception {
+        load(new Class[]{BaseConfiguration.class}, new String[]{"spring.resources.chain.enabled:true"});
+        SimpleUrlHandlerMapping hm = this.context.getBean("resourceHandlerMapping", SimpleUrlHandlerMapping.class);
+        assertThat(hm.getUrlMap().get("/**")).isInstanceOf(ResourceWebHandler.class);
+        ResourceWebHandler staticHandler = (ResourceWebHandler) hm.getUrlMap().get("/**");
+        assertThat(staticHandler.getResourceResolvers()).extractingResultOf("getClass")
+                .containsOnly(CachingResourceResolver.class, PathResourceResolver.class);
+        assertThat(staticHandler.getResourceTransformers()).extractingResultOf("getClass")
+                .containsOnly(CachingResourceTransformer.class);
+    }
 
-	@Configuration
-	protected static class CustomWebFilters extends BaseConfiguration {
+    @Test
+    public void shouldRegisterViewResolvers() throws Exception {
+        load(ViewResolvers.class);
+        ViewResolutionResultHandler resultHandler = this.context.getBean(ViewResolutionResultHandler.class);
+        assertThat(resultHandler.getViewResolvers()).containsExactly(
+                this.context.getBean("aViewResolver", ViewResolver.class),
+                this.context.getBean("anotherViewResolver", ViewResolver.class)
+        );
+    }
 
-		@Bean
-		public WebFilter aWebFilter() {
-			return mock(WebFilter.class);
-		}
+    private void load(Class<?>... config) {
+        load(config, new String[0]);
+    }
 
-		@Bean
-		@Order(Ordered.LOWEST_PRECEDENCE)
-		public WebFilter lastWebFilter() {
-			return mock(WebFilter.class);
-		}
-
-		@Bean
-		@Order(Ordered.HIGHEST_PRECEDENCE)
-		public WebFilter firstWebFilter() {
-			return mock(WebFilter.class);
-		}
-	}
+    private void load(Class<?>[] config, String[] environment) {
+        this.context = new ReactiveWebApplicationContext();
+        EnvironmentTestUtils.addEnvironment(this.context, environment);
+        this.context.register(config);
+        this.context.refresh();
+    }
 
 
-	@Configuration
-	protected static class ExistingDispatcherHandler extends BaseConfiguration {
+    @Configuration
+    protected static class CustomWebFilters extends BaseConfiguration {
 
-		@Bean
-		public DispatcherHandler dispatcherHandler() {
-			return new DispatcherHandler();
-		}
-	}
+        @Bean
+        public WebFilter aWebFilter() {
+            return mock(WebFilter.class);
+        }
 
-	@Configuration
-	protected static class CustomArgumentResolvers extends BaseConfiguration {
+        @Bean
+        @Order(Ordered.LOWEST_PRECEDENCE)
+        public WebFilter lastWebFilter() {
+            return mock(WebFilter.class);
+        }
 
-		@Bean
-		public HandlerMethodArgumentResolver firstResolver() {
-			return mock(HandlerMethodArgumentResolver.class);
-		}
+        @Bean
+        @Order(Ordered.HIGHEST_PRECEDENCE)
+        public WebFilter firstWebFilter() {
+            return mock(WebFilter.class);
+        }
+    }
 
-		@Bean
-		public HandlerMethodArgumentResolver secondResolver() {
-			return mock(HandlerMethodArgumentResolver.class);
-		}
 
-	}
+    @Configuration
+    protected static class ExistingDispatcherHandler extends BaseConfiguration {
 
-	@Configuration
-	protected static class ViewResolvers extends BaseConfiguration {
+        @Bean
+        public DispatcherHandler dispatcherHandler() {
+            return new DispatcherHandler();
+        }
+    }
 
-		@Bean
-		@Order(Ordered.HIGHEST_PRECEDENCE)
-		public ViewResolver aViewResolver() {
-			return mock(ViewResolver.class);
-		}
+    @Configuration
+    protected static class CustomArgumentResolvers extends BaseConfiguration {
 
-		@Bean
-		public ViewResolver anotherViewResolver() {
-			return mock(ViewResolver.class);
-		}
-	}
+        @Bean
+        public HandlerMethodArgumentResolver firstResolver() {
+            return mock(HandlerMethodArgumentResolver.class);
+        }
 
-	@Configuration
-	@Import({ReactiveWebAutoConfiguration.class})
-	@EnableConfigurationProperties(ReactiveServerProperties.class)
-	protected static class BaseConfiguration {
+        @Bean
+        public HandlerMethodArgumentResolver secondResolver() {
+            return mock(HandlerMethodArgumentResolver.class);
+        }
 
-	}
+    }
+
+    @Configuration
+    protected static class ViewResolvers extends BaseConfiguration {
+
+        @Bean
+        @Order(Ordered.HIGHEST_PRECEDENCE)
+        public ViewResolver aViewResolver() {
+            return mock(ViewResolver.class);
+        }
+
+        @Bean
+        public ViewResolver anotherViewResolver() {
+            return mock(ViewResolver.class);
+        }
+    }
+
+    @Configuration
+    @Import({ReactiveHttpServerAutoConfiguration.class,
+            DispatcherHandlerAutoConfiguration.class,
+            ReactiveWebAutoConfiguration.class})
+    @EnableConfigurationProperties(ReactiveServerProperties.class)
+    protected static class BaseConfiguration {
+
+    }
 }
