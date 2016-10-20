@@ -15,9 +15,13 @@
  */
 package org.springframework.boot.autoconfigure.reactiveweb;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnReactiveWebApplication;
 import org.springframework.boot.context.embedded.ReactiveServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.server.reactive.HttpHandler;
@@ -27,13 +31,18 @@ import org.springframework.web.reactive.DispatcherHandler;
  * @author Brian Clozel
  */
 @Configuration
+@ConditionalOnReactiveWebApplication
 @ConditionalOnClass({DispatcherHandler.class, HttpHandler.class})
 @EnableConfigurationProperties(ReactiveServerProperties.class)
+@AutoConfigureAfter(DispatcherHandlerAutoConfiguration.class)
 @Import({ReactiveHttpServerConfiguration.TomcatAutoConfiguration.class,
-		ReactiveHttpServerConfiguration.JettyAutoConfiguration.class,
-		ReactiveHttpServerConfiguration.ReactorAutoConfiguration.class,
-		ReactiveHttpServerConfiguration.RxNettyAutoConfiguration.class,
-		ReactiveHttpServerConfiguration.UndertowAutoConfiguration.class})
+        ReactiveHttpServerConfiguration.JettyAutoConfiguration.class,
+        ReactiveHttpServerConfiguration.ReactorAutoConfiguration.class,
+        ReactiveHttpServerConfiguration.RxNettyAutoConfiguration.class,
+        ReactiveHttpServerConfiguration.UndertowAutoConfiguration.class})
 public class ReactiveHttpServerAutoConfiguration {
-
+    @Autowired
+    void setContext(ApplicationContext context) {
+        context.toString();
+    }
 }
