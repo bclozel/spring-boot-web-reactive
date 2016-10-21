@@ -54,7 +54,7 @@ abstract class ReactiveHttpServerConfiguration {
 
 	@ConditionalOnMissingBean(ReactiveHttpServerFactory.class)
 	@ConditionalOnClass({HttpServer.class})
-	static class ReactorAutoConfiguration {
+	static class ReactorNettyAutoConfiguration {
 		@Bean
 		public ReactorEmbeddedHttpServerFactory reactorEmbeddedHttpServerFactory() {
 			return new ReactorEmbeddedHttpServerFactory();

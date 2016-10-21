@@ -13,27 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.springframework.boot.autoconfigure.reactiveweb;
+
+package org.springframework.boot.autoconfigure.reactor;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.context.embedded.ReactiveServerProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.http.server.reactive.HttpHandler;
-import org.springframework.web.reactive.DispatcherHandler;
 
 /**
  * @author Brian Clozel
  */
 @Configuration
-@ConditionalOnClass({DispatcherHandler.class, HttpHandler.class})
-@EnableConfigurationProperties(ReactiveServerProperties.class)
-@Import({ReactiveHttpServerConfiguration.TomcatAutoConfiguration.class,
-		ReactiveHttpServerConfiguration.JettyAutoConfiguration.class,
-		ReactiveHttpServerConfiguration.ReactorNettyAutoConfiguration.class,
-		ReactiveHttpServerConfiguration.RxNettyAutoConfiguration.class,
-		ReactiveHttpServerConfiguration.UndertowAutoConfiguration.class})
-public class ReactiveHttpServerAutoConfiguration {
+@ConditionalOnClass({Mono.class, Flux.class})
+@EnableConfigurationProperties(ReactorCoreProperties.class)
+public class ReactorCoreAutoConfiguration {
+
+	@Bean
+	public ReactorCoreCustomizer reactorCoreCustomizer(ReactorCoreProperties reactorCoreProperties) {
+		return new ReactorCoreCustomizer(reactorCoreProperties);
+	}
 
 }
