@@ -26,4 +26,6 @@ public interface EmbeddedReactiveHttpServer extends InitializingBean, Lifecycle 
 
 	int getPort();
 
+	Ssl getSsl();
+
 }

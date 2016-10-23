@@ -14,4 +14,8 @@ public interface ConfigurableEmbeddedReactiveHttpServer {
 	void setPort(int port);
 
 	void setHandler(HttpHandler handler);
+
+	void setSsl(Ssl ssl);
+
+	void setSslStoreProvider(SslStoreProvider var1);
 }
