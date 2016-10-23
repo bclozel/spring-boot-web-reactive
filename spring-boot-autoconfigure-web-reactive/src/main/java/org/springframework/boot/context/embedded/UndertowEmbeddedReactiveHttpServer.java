@@ -21,7 +21,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -50,15 +49,12 @@ public class UndertowEmbeddedReactiveHttpServer extends AbstractEmbeddedReactive
 		HttpHandler handler = new UndertowHttpHandlerAdapter(getHttpHandler());
 
 		Undertow.Builder builder = Undertow.builder();
-		Iterator customizerIterator = this.builderCustomizers.iterator();
 
-		while(customizerIterator.hasNext()) {
-			UndertowBuilderCustomizer customizer = (UndertowBuilderCustomizer)customizerIterator.next();
+		for(UndertowBuilderCustomizer customizer : this.builderCustomizers) {
 			customizer.customize(builder);
 		}
 		if(this.getSsl() != null && this.getSsl().isEnabled()) {
-			SSLContext ex = this.configureSsl(this.getSsl(), builder);
-			builder.addHttpsListener(getPort(), determineHost(), ex);
+			this.configureSsl(this.getSsl(), builder);
 		} else {
 			builder.addHttpListener(getPort(), determineHost());
 		}
@@ -99,11 +95,11 @@ public class UndertowEmbeddedReactiveHttpServer extends AbstractEmbeddedReactive
 		return this.running;
 	}
 
-	private SSLContext configureSsl(Ssl ssl, Undertow.Builder builder) {
-		SSLContext ex = null;
+	private void configureSsl(Ssl ssl, Undertow.Builder builder) {
 		try {
-			ex = SSLContext.getInstance(ssl.getProtocol());
+            SSLContext ex = SSLContext.getInstance(ssl.getProtocol());
 			ex.init(this.getKeyManagers(), this.getTrustManagers(), (SecureRandom)null);
+            builder.addHttpsListener(getPort(), determineHost(), ex);
 			builder.setSocketOption(Options.SSL_CLIENT_AUTH_MODE, this.getSslClientAuthMode(ssl));
 			if(ssl.getEnabledProtocols() != null) {
 				builder.setSocketOption(Options.SSL_ENABLED_PROTOCOLS, Sequence.of(ssl.getEnabledProtocols()));
@@ -118,7 +114,6 @@ public class UndertowEmbeddedReactiveHttpServer extends AbstractEmbeddedReactive
 		} catch (KeyManagementException var6) {
 			throw new IllegalStateException(var6);
 		}
-		return ex;
 	}
 
 	private SslClientAuthMode getSslClientAuthMode(Ssl ssl) {
