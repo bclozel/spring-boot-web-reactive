@@ -14,4 +14,6 @@ public interface ConfigurableEmbeddedReactiveHttpServer {
 	void setPort(int port);
 
 	void setHandler(HttpHandler handler);
+
+	void setRequestTimeout(Long requestTimeout);
 }

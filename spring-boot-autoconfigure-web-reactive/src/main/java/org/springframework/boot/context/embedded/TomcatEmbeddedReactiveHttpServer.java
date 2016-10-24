@@ -41,6 +41,7 @@ public class TomcatEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveHt
 			this.tomcatServer.setHostname(getAddress().getHostAddress());
 		}
 		this.tomcatServer.setPort(getPort());
+		this.tomcatServer.getConnector().setAsyncTimeout(getRequestTimeout());
 
 		Assert.notNull(getHttpHandler());
 		ServletHttpHandlerAdapter servlet = new ServletHttpHandlerAdapter(getHttpHandler());
@@ -48,7 +49,7 @@ public class TomcatEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveHt
 		File base = new File(System.getProperty("java.io.tmpdir"));
 		Context rootContext = tomcatServer.addContext("", base.getAbsolutePath());
 		Tomcat.addServlet(rootContext, "httpHandlerServlet", servlet);
-		rootContext.addServletMapping("/", "httpHandlerServlet");
+		rootContext.addServletMappingDecoded("/", "httpHandlerServlet");
 	}
 
 	@Override

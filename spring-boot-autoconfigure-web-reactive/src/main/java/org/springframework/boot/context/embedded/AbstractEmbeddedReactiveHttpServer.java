@@ -28,6 +28,8 @@ public abstract class AbstractEmbeddedReactiveHttpServer
 
 	private int port = -1;
 
+	private long requestTimeout;
+
 	private HttpHandler httpHandler;
 
 	@Override
@@ -60,6 +62,15 @@ public abstract class AbstractEmbeddedReactiveHttpServer
 	@Override
 	public void setPort(int port) {
 		this.port = port;
+	}
+
+	public long getRequestTimeout() {
+		return requestTimeout;
+	}
+
+	@Override
+	public void setRequestTimeout(Long requestTimeout) {
+		this.requestTimeout = requestTimeout;
 	}
 
 	@Override

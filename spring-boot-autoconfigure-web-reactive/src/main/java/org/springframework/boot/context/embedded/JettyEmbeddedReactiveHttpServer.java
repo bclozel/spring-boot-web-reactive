@@ -56,6 +56,7 @@ public class JettyEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveHtt
 			connector.setHost(getAddress().getHostAddress());
 		}
 		connector.setPort(getPort());
+		connector.setIdleTimeout(getRequestTimeout());
 		this.jettyServer.addConnector(connector);
 	}
 
