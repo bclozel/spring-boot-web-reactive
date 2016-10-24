@@ -16,8 +16,22 @@
 
 package org.springframework.boot.context.embedded;
 
+import io.netty.handler.codec.http2.Http2SecurityUtil;
+import io.netty.handler.ssl.*;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.util.Assert;
+import org.springframework.util.ResourceUtils;
+import reactor.ipc.netty.config.ServerOptions;
+import reactor.ipc.netty.http.HttpServer;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManagerFactory;
+import java.net.URL;
+import java.security.KeyStore;
+import java.security.cert.CertificateException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ReactorEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveHttpServer implements EmbeddedReactiveHttpServer {
 
@@ -25,18 +39,118 @@ public class ReactorEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveH
 
 	private ReactorHttpHandlerAdapter reactorHandler;
 
-	private reactor.ipc.netty.http.HttpServer reactorServer;
+	private HttpServer reactorServer;
 
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		Assert.notNull(getHttpHandler());
 		this.reactorHandler = new ReactorHttpHandlerAdapter(getHttpHandler());
-		if (getAddress() != null) {
-			this.reactorServer = reactor.ipc.netty.http.HttpServer.create(getAddress().getHostAddress(), getPort());
+		ServerOptions reactorServerOptions = ServerOptions.create();
+		if(this.getSsl() != null && this.getSsl().isEnabled()) {
+			configureSsl(this.getSsl(), reactorServerOptions);
 		}
-		else {
-			this.reactorServer = reactor.ipc.netty.http.HttpServer.create(getPort());
+		if (getAddress() != null) {
+			reactorServerOptions.listen(getAddress().getHostAddress(), getPort());
+		} else {
+			reactorServerOptions.listen(getPort());
+		}
+		this.reactorServer = HttpServer.create(reactorServerOptions);
+	}
+
+	private void configureSsl(Ssl ssl, ServerOptions reactorServerOptions) throws CertificateException {
+		Set<String> ciphers = new HashSet<>(Http2SecurityUtil.CIPHERS);
+		if (null != ssl.getCiphers()) {
+			ciphers.addAll(Arrays.asList(ssl.getCiphers()));
+		}
+		SslProvider provider = OpenSsl.isAlpnSupported() ? SslProvider.OPENSSL : SslProvider.JDK;
+
+		SslContextBuilder sslContextBuilder = SslContextBuilder.forServer(getKeyManagerFactory())
+				.trustManager(getTrustManagerFactory())
+				.sslProvider(provider)
+				.ciphers(ciphers, SupportedCipherSuiteFilter.INSTANCE)
+				.applicationProtocolConfig(new ApplicationProtocolConfig(
+						protocol(ssl.getProtocol()),
+						// NO_ADVERTISE is currently the only mode supported by both OpenSsl and JDK providers.
+						ApplicationProtocolConfig.SelectorFailureBehavior.NO_ADVERTISE,
+						// ACCEPT is currently the only mode supported by both OpenSsl and JDK providers.
+						ApplicationProtocolConfig.SelectedListenerFailureBehavior.ACCEPT,
+						ApplicationProtocolNames.HTTP_2,
+						ApplicationProtocolNames.HTTP_1_1))
+				.clientAuth(getSslClientAuth(ssl));
+
+		reactorServerOptions.ssl(sslContextBuilder);
+	}
+
+	private ClientAuth getSslClientAuth(Ssl ssl) {
+		return ssl.getClientAuth() == Ssl.ClientAuth.NEED?ClientAuth.REQUIRE:(ssl.getClientAuth() == Ssl.ClientAuth.WANT?ClientAuth.OPTIONAL:ClientAuth.NONE);
+	}
+
+	private ApplicationProtocolConfig.Protocol protocol(String protocol) {
+		if ("NPN".equals(protocol)) {
+			return ApplicationProtocolConfig.Protocol.NPN;
+		} else if ("NPN_AND_ALPN".equals(protocol)) {
+			return ApplicationProtocolConfig.Protocol.NPN_AND_ALPN;
+		}
+		return ApplicationProtocolConfig.Protocol.ALPN;
+	}
+
+	private TrustManagerFactory getTrustManagerFactory() {
+		try {
+			KeyStore ex = this.getTrustStore();
+			TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
+					TrustManagerFactory.getDefaultAlgorithm());
+			trustManagerFactory.init(ex);
+			return trustManagerFactory;
+		} catch (Exception var3) {
+			throw new IllegalStateException(var3);
+		}
+	}
+
+	private KeyStore getTrustStore() throws Exception {
+		if(this.getSslStoreProvider() != null) {
+			return this.getSslStoreProvider().getTrustStore();
+		} else {
+			Ssl ssl = this.getSsl();
+			return this.loadKeyStore(ssl.getTrustStoreType(), ssl.getTrustStore(), ssl.getTrustStorePassword());
+		}
+	}
+
+	private KeyManagerFactory getKeyManagerFactory() {
+		try {
+			KeyStore ex = this.getKeyStore();
+			KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+			Ssl ssl = this.getSsl();
+			char[] keyPassword = ssl.getKeyPassword() != null?ssl.getKeyPassword().toCharArray():null;
+			if(keyPassword == null && ssl.getKeyStorePassword() != null) {
+				keyPassword = ssl.getKeyStorePassword().toCharArray();
+			}
+
+			keyManagerFactory.init(ex, keyPassword);
+			return keyManagerFactory;
+		} catch (Exception var5) {
+			throw new IllegalStateException(var5);
+		}
+	}
+
+	private KeyStore getKeyStore() throws Exception {
+		if(this.getSslStoreProvider() != null) {
+			return this.getSslStoreProvider().getKeyStore();
+		} else {
+			Ssl ssl = this.getSsl();
+			return this.loadKeyStore(ssl.getKeyStoreType(), ssl.getKeyStore(), ssl.getKeyStorePassword());
+		}
+	}
+
+	private KeyStore loadKeyStore(String type, String resource, String password) throws Exception {
+		type = type == null?"JKS":type;
+		if(resource == null) {
+			return null;
+		} else {
+			KeyStore store = KeyStore.getInstance(type);
+			URL url = ResourceUtils.getURL(resource);
+			store.load(url.openStream(), password == null?null:password.toCharArray());
+			return store;
 		}
 	}
 
