@@ -28,6 +28,8 @@ public abstract class AbstractEmbeddedReactiveHttpServer
 
 	private int port = -1;
 
+    private long requestTimeout;
+
 	private Ssl ssl;
 
 	private SslStoreProvider sslStoreProvider;
@@ -66,7 +68,17 @@ public abstract class AbstractEmbeddedReactiveHttpServer
 		this.port = port;
 	}
 
-	@Override
+    public long getRequestTimeout() {
+        return requestTimeout;
+    }
+
+    @Override
+    public void setRequestTimeout(Long requestTimeout) {
+        this.requestTimeout = requestTimeout;
+    }
+
+
+    @Override
 	public Ssl getSsl() {
 		return ssl;
 	}
@@ -74,11 +86,6 @@ public abstract class AbstractEmbeddedReactiveHttpServer
 	@Override
 	public void setSsl(Ssl ssl) {
 		this.ssl = ssl;
-	}
-
-	@Override
-	public void setHandler(HttpHandler handler) {
-		this.httpHandler = handler;
 	}
 
 	public SslStoreProvider getSslStoreProvider() {
@@ -89,6 +96,11 @@ public abstract class AbstractEmbeddedReactiveHttpServer
 	public void setSslStoreProvider(SslStoreProvider sslStoreProvider) {
 		this.sslStoreProvider = sslStoreProvider;
 	}
+
+    @Override
+    public void setHandler(HttpHandler handler) {
+        this.httpHandler = handler;
+    }
 
 	public HttpHandler getHttpHandler() {
 		return this.httpHandler;

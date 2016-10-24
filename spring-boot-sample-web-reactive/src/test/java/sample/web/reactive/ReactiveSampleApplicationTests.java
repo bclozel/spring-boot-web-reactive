@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import reactor.core.publisher.Mono;
+import reactor.test.subscriber.ScriptedSubscriber;
 
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,7 +16,6 @@ import org.springframework.web.client.reactive.WebClient;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.codec.BodyExtractors.toMono;
-import static sample.web.reactive.TestSubscriber.subscribe;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -41,11 +41,13 @@ public class ReactiveSampleApplicationTests {
 				.exchange(request)
 				.then(response -> response.body(toMono(BootStarter.class)));
 
-		subscribe(result).awaitAndAssertNextValuesWith(
-				starter -> {
+		ScriptedSubscriber.<BootStarter>create()
+				.consumeNextWith(starter -> {
 					assertThat(starter.getId()).isEqualTo("spring-boot-starter-web-reactive");
 					assertThat(starter.getLabel()).isEqualTo("Spring Boot Web Reactive");
-				}).assertComplete();
+				})
+				.expectComplete()
+				.verify(result);
 	}
 
 	@Test
@@ -58,10 +60,12 @@ public class ReactiveSampleApplicationTests {
 				.exchange(request)
 				.then(response -> response.body(toMono(String.class)));
 
-		subscribe(result).awaitAndAssertNextValuesWith(
-				content -> {
+		ScriptedSubscriber.<String>create()
+				.consumeNextWith(content -> {
 					assertThat(content).contains("custom-value");
-				}).assertComplete();
+				})
+				.expectComplete()
+				.verify(result);
 	}
 
 	@Test
@@ -74,10 +78,12 @@ public class ReactiveSampleApplicationTests {
 				.exchange(request)
 				.then(response -> response.body(toMono(String.class)));
 
-		subscribe(result).awaitAndAssertNextValuesWith(
-				content -> {
+		ScriptedSubscriber.<String>create()
+				.consumeNextWith(content -> {
 					assertThat(content).contains("Spring Framework");
-				}).assertComplete();
+				})
+				.expectComplete()
+				.verify(result);
 	}
 
 }
