@@ -39,11 +39,13 @@ import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.http.CacheControl;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.web.reactive.DispatcherHandler;
+import org.springframework.web.reactive.config.DelegatingWebReactiveConfiguration;
 import org.springframework.web.reactive.config.ResourceChainRegistration;
 import org.springframework.web.reactive.config.ResourceHandlerRegistration;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.ViewResolverRegistry;
 import org.springframework.web.reactive.config.WebReactiveConfigurationSupport;
+import org.springframework.web.reactive.config.WebReactiveConfigurer;
 import org.springframework.web.reactive.resource.AppCacheManifestTransformer;
 import org.springframework.web.reactive.resource.GzipResourceResolver;
 import org.springframework.web.reactive.resource.ResourceResolver;
@@ -66,7 +68,8 @@ public class ReactiveWebAutoConfiguration {
 	@Configuration
 	@ConditionalOnMissingBean(WebReactiveConfigurationSupport.class)
 	@EnableConfigurationProperties({ResourceProperties.class, WebReactiveProperties.class})
-	public static class WebReactiveConfig extends WebReactiveConfigurationSupport {
+	@Import(DelegatingWebReactiveConfiguration.class)
+	public static class WebReactiveConfig implements WebReactiveConfigurer {
 
 		private static final Log logger = LogFactory
 				.getLog(WebReactiveConfig.class);
@@ -95,14 +98,14 @@ public class ReactiveWebAutoConfiguration {
 		}
 
 		@Override
-		protected void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+		public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
 			if (this.argumentResolvers != null) {
 				resolvers.addAll(this.argumentResolvers);
 			}
 		}
 
 		@Override
-		protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+		public void addResourceHandlers(ResourceHandlerRegistry registry) {
 			if (!this.resourceProperties.isAddMappings()) {
 				logger.debug("Default resource handling disabled");
 				return;
@@ -129,7 +132,7 @@ public class ReactiveWebAutoConfiguration {
 		}
 
 		@Override
-		protected void configureViewResolvers(ViewResolverRegistry registry) {
+		public void configureViewResolvers(ViewResolverRegistry registry) {
 			if (this.viewResolvers != null) {
 				AnnotationAwareOrderComparator.sort(this.viewResolvers);
 				this.viewResolvers.forEach(resolver -> registry.viewResolver(resolver));
