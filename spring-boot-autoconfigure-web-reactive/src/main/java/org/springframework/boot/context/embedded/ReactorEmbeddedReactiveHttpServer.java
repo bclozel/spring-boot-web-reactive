@@ -58,6 +58,32 @@ public class ReactorEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveH
 		this.reactorServer = HttpServer.create(reactorServerOptions);
 	}
 
+	@Override
+	public void start() {
+		if (!this.running) {
+			try {
+				this.reactorServer.startAndAwait(reactorHandler);
+				this.running = true;
+			}
+			catch (InterruptedException ex) {
+				throw new IllegalStateException(ex);
+			}
+		}
+	}
+
+	@Override
+	public void stop() {
+		if (this.running) {
+			this.reactorServer.shutdown();
+			this.running = false;
+		}
+	}
+
+	@Override
+	public boolean isRunning() {
+		return this.running;
+	}
+
 	private void configureSsl(Ssl ssl, ServerOptions reactorServerOptions) throws CertificateException {
 		Set<String> ciphers = new HashSet<>(Http2SecurityUtil.CIPHERS);
 		if (null != ssl.getCiphers()) {
@@ -152,31 +178,5 @@ public class ReactorEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveH
 			store.load(url.openStream(), password == null?null:password.toCharArray());
 			return store;
 		}
-	}
-
-	@Override
-	public void start() {
-		if (!this.running) {
-			try {
-				this.reactorServer.startAndAwait(reactorHandler);
-				this.running = true;
-			}
-			catch (InterruptedException ex) {
-				throw new IllegalStateException(ex);
-			}
-		}
-	}
-
-	@Override
-	public void stop() {
-		if (this.running) {
-			this.reactorServer.shutdown();
-			this.running = false;
-		}
-	}
-
-	@Override
-	public boolean isRunning() {
-		return this.running;
 	}
 }
