@@ -87,14 +87,6 @@ public class ReactiveWebAutoConfigurationTests {
 	}
 
 	@Test
-	public void shouldRegisterSingleDispatcherHandler() throws Exception {
-		load(ExistingDispatcherHandler.class);
-
-		assertThat(this.context.getBeansOfType(DispatcherHandler.class).size()).isEqualTo(1);
-		assertThat(this.context.getBean("dispatcherHandler", DispatcherHandler.class)).isNotNull();
-	}
-
-	@Test
 	public void shouldRegisterCustomWebFilters() throws Exception {
 		load(CustomWebFilters.class);
 

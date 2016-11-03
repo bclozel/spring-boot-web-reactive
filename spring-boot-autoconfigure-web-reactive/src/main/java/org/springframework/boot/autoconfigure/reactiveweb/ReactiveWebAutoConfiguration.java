@@ -52,9 +52,7 @@ import org.springframework.web.reactive.resource.ResourceResolver;
 import org.springframework.web.reactive.resource.VersionResourceResolver;
 import org.springframework.web.reactive.result.method.HandlerMethodArgumentResolver;
 import org.springframework.web.reactive.result.view.ViewResolver;
-import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
-import org.springframework.web.server.handler.ResponseStatusExceptionHandler;
 
 /**
  * @author Brian Clozel
@@ -150,10 +148,7 @@ public class ReactiveWebAutoConfiguration {
 
 	@Configuration
 	@Import(WebReactiveConfig.class)
-	public static class DispatcherHandlerConfiguration
-			implements ApplicationContextAware {
-
-		public static final String DEFAULT_DISPATCHER_HANDLER_BEAN_NAME = "dispatcherHandler";
+	public static class WebHttpHandlerConfiguration implements ApplicationContextAware {
 
 		private ApplicationContext applicationContext;
 
@@ -164,37 +159,8 @@ public class ReactiveWebAutoConfiguration {
 		}
 
 		@Bean
-		@ConditionalOnMissingBean(name = DEFAULT_DISPATCHER_HANDLER_BEAN_NAME, value = DispatcherHandler.class)
-		public DispatcherHandler dispatcherHandler() {
-			DispatcherHandler dispatcherHandler = new DispatcherHandler();
-			dispatcherHandler.setApplicationContext(applicationContext);
-			return dispatcherHandler;
-		}
-	}
-
-	@Configuration
-	@Import(DispatcherHandlerConfiguration.class)
-	public static class WebReactiveHandlerConfiguration {
-
-		private final List<WebFilter> webFilters;
-
-		public WebReactiveHandlerConfiguration(
-				ObjectProvider<List<WebFilter>> webFilters) {
-			this.webFilters = webFilters.getIfAvailable();
-			if (this.webFilters != null) {
-				AnnotationAwareOrderComparator.sort(this.webFilters);
-			}
-		}
-
-		@Bean
 		public HttpHandler httpHandler(DispatcherHandler dispatcherHandler) {
-			WebHttpHandlerBuilder builder = WebHttpHandlerBuilder
-					.webHandler(dispatcherHandler)
-					.exceptionHandlers(new ResponseStatusExceptionHandler());
-			if (this.webFilters != null) {
-				builder.filters(this.webFilters.toArray(new WebFilter[0]));
-			}
-			return builder.build();
+			return WebHttpHandlerBuilder.applicationContext(this.applicationContext).build();
 		}
 
 	}
