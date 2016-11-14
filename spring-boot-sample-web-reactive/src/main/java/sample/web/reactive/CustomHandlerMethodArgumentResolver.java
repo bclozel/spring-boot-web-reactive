@@ -17,8 +17,7 @@ package sample.web.reactive;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.reactive.result.method.BindingContext;
+import org.springframework.web.reactive.BindingContext;
 import org.springframework.web.reactive.result.method.HandlerMethodArgumentResolver;
 import org.springframework.web.server.ServerWebExchange;
 
@@ -36,7 +35,8 @@ public class CustomHandlerMethodArgumentResolver
 	@Override
 	public Mono<Object> resolveArgument(MethodParameter param,
 			BindingContext bindingContext, ServerWebExchange exchange) {
-		return Mono.just(new CustomArgument(exchange.getRequest().getQueryParams().getFirst("content")));
+		return Mono.just(new CustomArgument(
+				exchange.getRequest().getQueryParams().getFirst("content")));
 	}
 
 	@Override
