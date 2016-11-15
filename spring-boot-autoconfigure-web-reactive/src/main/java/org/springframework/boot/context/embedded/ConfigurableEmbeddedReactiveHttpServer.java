@@ -15,5 +15,9 @@ public interface ConfigurableEmbeddedReactiveHttpServer {
 
 	void setHandler(HttpHandler handler);
 
-	void setRequestTimeout(Long requestTimeout);
+	void setSsl(Ssl ssl);
+
+	void setSslStoreProvider(SslStoreProvider sslStoreProvider);
+
+    void setRequestTimeout(Long requestTimeout);
 }
