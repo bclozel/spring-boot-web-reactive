@@ -114,6 +114,10 @@
                     <groupId>io.reactivex</groupId>
                     <artifactId>rxnetty-http</artifactId>
                 </dependency>
+				<dependency>
+					<groupId>io.reactivex</groupId>
+					<artifactId>rxjava-reactive-streams</artifactId>
+				</dependency>
 				<!-- Using Reactor Netty HTTP client in tests -->
 				<dependency>
 					<groupId>io.projectreactor.ipc</groupId>
