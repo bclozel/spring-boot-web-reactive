@@ -17,7 +17,7 @@ package org.springframework.boot.autoconfigure.reactiveweb;
 
 import io.reactivex.netty.protocol.http.server.HttpServerImpl;
 import io.undertow.Undertow;
-import reactor.ipc.netty.http.HttpServer;
+import reactor.ipc.netty.http.server.HttpServer;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

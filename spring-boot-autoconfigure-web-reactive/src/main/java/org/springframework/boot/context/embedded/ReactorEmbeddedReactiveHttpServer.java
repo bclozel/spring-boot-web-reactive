@@ -16,16 +16,20 @@
 
 package org.springframework.boot.context.embedded;
 
+import java.util.concurrent.atomic.AtomicReference;
+
+import reactor.ipc.netty.NettyContext;
+
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.util.Assert;
 
 public class ReactorEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveHttpServer implements EmbeddedReactiveHttpServer {
 
-	private boolean running;
+	private AtomicReference<NettyContext> nettyContext = new AtomicReference<>();
 
 	private ReactorHttpHandlerAdapter reactorHandler;
 
-	private reactor.ipc.netty.http.HttpServer reactorServer;
+	private reactor.ipc.netty.http.server.HttpServer reactorServer;
 
 
 	@Override
@@ -33,36 +37,31 @@ public class ReactorEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveH
 		Assert.notNull(getHttpHandler());
 		this.reactorHandler = new ReactorHttpHandlerAdapter(getHttpHandler());
 		if (getAddress() != null) {
-			this.reactorServer = reactor.ipc.netty.http.HttpServer.create(getAddress().getHostAddress(), getPort());
+			this.reactorServer = reactor.ipc.netty.http.server.HttpServer.create(getAddress().getHostAddress(), getPort());
 		}
 		else {
-			this.reactorServer = reactor.ipc.netty.http.HttpServer.create(getPort());
+			this.reactorServer = reactor.ipc.netty.http.server.HttpServer.create(getPort());
 		}
 	}
 
 	@Override
 	public void start() {
-		if (!this.running) {
-			try {
-				this.reactorServer.startAndAwait(reactorHandler);
-				this.running = true;
-			}
-			catch (InterruptedException ex) {
-				throw new IllegalStateException(ex);
-			}
+		if (this.nettyContext.get() == null) {
+			this.nettyContext.set(this.reactorServer.newHandler(reactorHandler).block());
 		}
 	}
 
 	@Override
 	public void stop() {
-		if (this.running) {
-			this.reactorServer.shutdown();
-			this.running = false;
+		NettyContext context = this.nettyContext.getAndSet(null);
+		if (context != null) {
+			context.dispose();
 		}
 	}
 
 	@Override
 	public boolean isRunning() {
-		return this.running;
+		NettyContext context = this.nettyContext.get();
+		return context != null && context.channel().isActive();
 	}
 }
