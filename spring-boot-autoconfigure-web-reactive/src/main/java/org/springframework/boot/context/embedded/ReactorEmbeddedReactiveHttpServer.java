@@ -16,6 +16,7 @@
 
 package org.springframework.boot.context.embedded;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
 import reactor.ipc.netty.NettyContext;
@@ -24,6 +25,8 @@ import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.util.Assert;
 
 public class ReactorEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveHttpServer implements EmbeddedReactiveHttpServer {
+
+	private static CountDownLatch latch = new CountDownLatch(1);
 
 	private AtomicReference<NettyContext> nettyContext = new AtomicReference<>();
 
@@ -48,6 +51,7 @@ public class ReactorEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveH
 	public void start() {
 		if (this.nettyContext.get() == null) {
 			this.nettyContext.set(this.reactorServer.newHandler(reactorHandler).block());
+			startDaemonAwaitThread();
 		}
 	}
 
@@ -57,11 +61,27 @@ public class ReactorEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveH
 		if (context != null) {
 			context.dispose();
 		}
+		latch.countDown();
 	}
 
 	@Override
 	public boolean isRunning() {
 		NettyContext context = this.nettyContext.get();
 		return context != null && context.channel().isActive();
+	}
+
+	private void startDaemonAwaitThread() {
+		Thread awaitThread = new Thread("server") {
+			@Override
+			public void run() {
+				try {
+					ReactorEmbeddedReactiveHttpServer.latch.await();
+				}
+				catch (InterruptedException e) { }
+			}
+		};
+		awaitThread.setContextClassLoader(getClass().getClassLoader());
+		awaitThread.setDaemon(false);
+		awaitThread.start();
 	}
 }

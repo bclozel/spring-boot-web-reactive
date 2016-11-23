@@ -58,6 +58,7 @@ public class TomcatEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveHt
 			try {
 				this.running = true;
 				this.tomcatServer.start();
+				containerCounter.incrementAndGet();
 				startDaemonAwaitThread();
 			}
 			catch (LifecycleException ex) {
