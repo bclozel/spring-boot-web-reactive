@@ -42,6 +42,7 @@ compile('org.springframework.boot.experimental:spring-boot-starter-web-reactive'
 }
 compile "io.reactivex:rxnetty-common"
 compile "io.reactivex:rxnetty-http"
+compile "io.reactivex:rxjava-reactive-streams"
 ```
 
 Below are the supported server runtimes. For the exact dependencies check out
