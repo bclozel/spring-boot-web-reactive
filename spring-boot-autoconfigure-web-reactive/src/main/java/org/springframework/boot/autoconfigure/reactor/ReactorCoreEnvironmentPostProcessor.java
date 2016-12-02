@@ -27,6 +27,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.core.env.PropertySource;
+import org.springframework.util.ClassUtils;
 
 /**
  * {@link EnvironmentPostProcessor} to add properties that make sense when working at
@@ -39,6 +40,9 @@ public class ReactorCoreEnvironmentPostProcessor implements EnvironmentPostProce
 
 	private static final Map<String, Object> PROPERTIES;
 
+	private static final String CONDITIONAL_DEVTOOLS_CLASS = "org.springframework.boot.devtools." +
+			"restart.ConditionalOnInitializedRestarter";
+
 	static {
 		Map<String, Object> properties = new HashMap<String, Object>();
 		properties.put("spring.reactor.stacktrace-mode.enabled", "true");
@@ -48,9 +52,12 @@ public class ReactorCoreEnvironmentPostProcessor implements EnvironmentPostProce
 	@Override
 	public void postProcessEnvironment(ConfigurableEnvironment environment,
 			SpringApplication application) {
+
+		if (ClassUtils.isPresent(CONDITIONAL_DEVTOOLS_CLASS, null)) {
 			PropertySource<?> propertySource = new MapPropertySource("reactive",
 					PROPERTIES);
 			environment.getPropertySources().addLast(propertySource);
+		}
 	}
 
 }

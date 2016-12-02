@@ -76,7 +76,7 @@ Configuration class | Supported properties | Notes
 `ReactiveServerProperties` | `server.port`, `server.address` |
 `ResourceProperties` | `spring.resources.*` |
 `WebReactiveProperties` | `spring.reactive.static-path-pattern` |
-`ReactorCoreProperties` | `spring.reactor.stacktrace-mode.enabled` | Defaults to `true`, should be set to `false` in production for best performance.
+`ReactorCoreProperties` | `spring.reactor.stacktrace-mode.enabled` | Defaults to `true` if devtools is on the classpath, should be set to `false` in production for best performance.
 
 ## Known issues
 
