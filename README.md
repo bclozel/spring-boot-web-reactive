@@ -71,11 +71,12 @@ The Spring team has published a few blog posts on the subject:
 
 ## Supported configuration keys
 
-Configuration class | Supported properties
------------- | -------------
-`ReactiveServerProperties` | `server.port`, `server.address`
-`ResourceProperties` | `spring.resources.*`
-`WebReactiveProperties` | `spring.reactive.static-path-pattern`
+Configuration class | Supported properties | Notes
+------------ | ------------- | -------------
+`ReactiveServerProperties` | `server.port`, `server.address` |
+`ResourceProperties` | `spring.resources.*` |
+`WebReactiveProperties` | `spring.reactive.static-path-pattern` |
+`ReactorCoreProperties` | `spring.reactor.stacktrace-mode.enabled` | Defaults to `true`, should be set to `false` in production for best performance.
 
 ## Known issues
 
