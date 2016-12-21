@@ -23,10 +23,10 @@
 	<properties>
 		<netty.version>4.1.6.Final</netty.version>
 		<reactor-netty.version>0.6.0.BUILD-SNAPSHOT</reactor-netty.version>
-		<rxjava.version>1.2.2</rxjava.version>
-		<rxjava2.version>2.0.0</rxjava2.version>
+		<rxjava.version>1.2.4</rxjava.version>
+		<rxjava2.version>2.0.2</rxjava2.version>
 		<rxjava-adapter.version>1.2.1</rxjava-adapter.version>
-		<rx-netty.version>0.5.2-rc.4</rx-netty.version>
+		<rx-netty.version>0.5.2-rc.5</rx-netty.version>
 	</properties>
 
 	<dependencyManagement>
