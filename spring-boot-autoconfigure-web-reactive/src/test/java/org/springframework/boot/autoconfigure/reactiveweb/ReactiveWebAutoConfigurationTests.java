@@ -18,6 +18,7 @@ package org.springframework.boot.autoconfigure.reactiveweb;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import org.springframework.boot.context.embedded.ReactiveServerProperties;
@@ -87,6 +88,7 @@ public class ReactiveWebAutoConfigurationTests {
 	}
 
 	@Test
+	@Ignore("https://jira.spring.io/browse/SPR-15074")
 	public void shouldRegisterCustomWebFilters() throws Exception {
 		load(CustomWebFilters.class);
 
