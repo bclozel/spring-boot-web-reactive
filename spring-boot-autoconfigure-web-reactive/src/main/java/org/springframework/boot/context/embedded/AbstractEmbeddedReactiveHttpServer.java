@@ -15,8 +15,12 @@
  */
 package org.springframework.boot.context.embedded;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.util.SocketUtils;
@@ -31,6 +35,8 @@ public abstract class AbstractEmbeddedReactiveHttpServer
 	private long requestTimeout;
 
 	private HttpHandler httpHandler;
+
+	private Map<String, HttpHandler> handlerMap;
 
 	@Override
 	public InetAddress getAddress() {
@@ -80,6 +86,39 @@ public abstract class AbstractEmbeddedReactiveHttpServer
 
 	public HttpHandler getHttpHandler() {
 		return this.httpHandler;
+	}
+
+	@Override
+	public void registerHttpHandler(String contextPath, HttpHandler handler) {
+		if (this.handlerMap == null) {
+			this.handlerMap = new LinkedHashMap<>();
+		}
+		this.handlerMap.put(contextPath, handler);
+	}
+
+	public Map<String, HttpHandler> getHttpHandlerMap() {
+		return this.handlerMap;
+	}
+
+	/**
+	 * Returns the absolute temp dir for given servlet container.
+	 * @param prefix servlet container name
+	 * @return The temp dir for given servlet container.
+	 */
+	protected File createTempDir(String prefix) {
+		try {
+			File tempDir = File.createTempFile(prefix + ".", "." + getPort());
+			tempDir.delete();
+			tempDir.mkdir();
+			tempDir.deleteOnExit();
+			return tempDir;
+		}
+		catch (IOException ex) {
+			throw new EmbeddedServletContainerException(
+					"Unable to create tempDir. java.io.tmpdir is set to "
+							+ System.getProperty("java.io.tmpdir"),
+					ex);
+		}
 	}
 
 }

@@ -20,10 +20,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
+import org.apache.catalina.loader.WebappLoader;
 import org.apache.catalina.startup.Tomcat;
 
+import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedWebappClassLoader;
 import org.springframework.http.server.reactive.ServletHttpHandlerAdapter;
 import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 
 public class TomcatEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveHttpServer
 		implements EmbeddedReactiveHttpServer {
@@ -36,7 +39,9 @@ public class TomcatEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveHt
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		File baseDir = createTempDir("tomcat");
 		this.tomcatServer = new Tomcat();
+		this.tomcatServer.setBaseDir(baseDir.getAbsolutePath());
 		if (getAddress() != null) {
 			this.tomcatServer.setHostname(getAddress().getHostAddress());
 		}
@@ -44,12 +49,27 @@ public class TomcatEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveHt
 		this.tomcatServer.getConnector().setAsyncTimeout(getRequestTimeout());
 
 		Assert.notNull(getHttpHandler());
-		ServletHttpHandlerAdapter servlet = new ServletHttpHandlerAdapter(getHttpHandler());
+		ServletHttpHandlerAdapter servlet = initServletHttpHandlerAdapter();
 
-		File base = new File(System.getProperty("java.io.tmpdir"));
-		Context rootContext = tomcatServer.addContext("", base.getAbsolutePath());
+		File docBase = createTempDir("tomcat-docbase");
+		Context rootContext = tomcatServer.addContext("", docBase.getAbsolutePath());
+		WebappLoader loader = new WebappLoader(ClassUtils.getDefaultClassLoader());
+		loader.setLoaderClass(TomcatEmbeddedWebappClassLoader.class.getName());
+		loader.setDelegate(true);
+		rootContext.setLoader(loader);
 		Tomcat.addServlet(rootContext, "httpHandlerServlet", servlet);
 		rootContext.addServletMappingDecoded("/", "httpHandlerServlet");
+	}
+
+
+	private ServletHttpHandlerAdapter initServletHttpHandlerAdapter() {
+		if (getHttpHandlerMap() != null) {
+			return new ServletHttpHandlerAdapter(getHttpHandlerMap());
+		}
+		else {
+			Assert.notNull(getHttpHandler());
+			return new ServletHttpHandlerAdapter(getHttpHandler());
+		}
 	}
 
 	@Override
