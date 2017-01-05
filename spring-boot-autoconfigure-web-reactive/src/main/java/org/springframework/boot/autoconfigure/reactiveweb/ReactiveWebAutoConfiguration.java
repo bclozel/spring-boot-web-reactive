@@ -15,6 +15,7 @@
  */
 package org.springframework.boot.autoconfigure.reactiveweb;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -22,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -36,6 +38,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.convert.converter.GenericConverter;
+import org.springframework.format.Formatter;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.http.CacheControl;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.web.reactive.DispatcherHandler;
@@ -76,6 +82,8 @@ public class ReactiveWebAutoConfiguration {
 
 		private final WebReactiveProperties webReactiveProperties;
 
+		private final ListableBeanFactory beanFactory;
+
 		private final List<HandlerMethodArgumentResolver> argumentResolvers;
 
 		private final ResourceHandlerRegistrationCustomizer resourceHandlerRegistrationCustomizer;
@@ -84,12 +92,13 @@ public class ReactiveWebAutoConfiguration {
 
 
 		public WebReactiveConfig(ResourceProperties resourceProperties,
-				WebReactiveProperties webReactiveProperties,
+				WebReactiveProperties webReactiveProperties, ListableBeanFactory beanFactory,
 				ObjectProvider<List<HandlerMethodArgumentResolver>> resolvers,
 				ObjectProvider<ResourceHandlerRegistrationCustomizer> resourceHandlerRegistrationCustomizerProvider,
 				ObjectProvider<List<ViewResolver>> viewResolvers) {
 			this.resourceProperties = resourceProperties;
 			this.webReactiveProperties = webReactiveProperties;
+			this.beanFactory = beanFactory;
 			this.argumentResolvers = resolvers.getIfAvailable();
 			this.resourceHandlerRegistrationCustomizer = resourceHandlerRegistrationCustomizerProvider.getIfAvailable();
 			this.viewResolvers = viewResolvers.getIfAvailable();
@@ -135,6 +144,23 @@ public class ReactiveWebAutoConfiguration {
 				AnnotationAwareOrderComparator.sort(this.viewResolvers);
 				this.viewResolvers.forEach(resolver -> registry.viewResolver(resolver));
 			}
+		}
+
+		@Override
+		public void addFormatters(final FormatterRegistry registry) {
+			for (Converter<?, ?> converter : getBeansOfType(Converter.class)) {
+				registry.addConverter(converter);
+			}
+			for (GenericConverter converter : getBeansOfType(GenericConverter.class)) {
+				registry.addConverter(converter);
+			}
+			for (Formatter<?> formatter : getBeansOfType(Formatter.class)) {
+				registry.addFormatter(formatter);
+			}
+		}
+
+		private <T> Collection<T> getBeansOfType(Class<T> type) {
+			return this.beanFactory.getBeansOfType(type).values();
 		}
 
 		private void customizeResourceHandlerRegistration(
