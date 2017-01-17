@@ -15,9 +15,6 @@
  */
 package org.springframework.boot.autoconfigure.reactiveweb;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -36,6 +33,7 @@ import org.springframework.web.reactive.DispatcherHandler;
 import org.springframework.web.reactive.HandlerMapping;
 import org.springframework.web.reactive.accept.CompositeContentTypeResolver;
 import org.springframework.web.reactive.config.WebReactiveConfigurationSupport;
+import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.reactive.resource.CachingResourceResolver;
 import org.springframework.web.reactive.resource.CachingResourceTransformer;
@@ -48,8 +46,15 @@ import org.springframework.web.reactive.result.view.ViewResolutionResultHandler;
 import org.springframework.web.reactive.result.view.ViewResolver;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebHandler;
+import org.springframework.web.server.adapter.HttpWebHandlerAdapter;
 import org.springframework.web.server.handler.FilteringWebHandler;
 import org.springframework.web.server.handler.WebHandlerDecorator;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
+import static org.mockito.Mockito.mock;
+import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
  * @author Brian Clozel
@@ -59,12 +64,30 @@ public class ReactiveWebAutoConfigurationTests {
 	private AnnotationConfigApplicationContext context;
 
 	@Test
+	public void shouldNotProcessIfExistingHttpHandler() throws Exception {
+		load(CustomHttpHandler.class);
+
+		assertThat(this.context.getBeansOfType(RequestMappingHandlerMapping.class).size()).isEqualTo(0);
+		assertThat(this.context.getBeansOfType(RequestMappingHandlerAdapter.class).size()).isEqualTo(0);
+		assertThat(this.context.getBeansOfType(HttpWebHandlerAdapter.class).size()).isEqualTo(0);
+	}
+
+
+	@Test
 	public void shouldNotProcessIfExistingWebReactiveConfiguration() throws Exception {
-		this.context = new AnnotationConfigApplicationContext(BaseConfiguration.class,
-				WebReactiveConfigurationSupport.class);
+		load(WebReactiveConfigurationSupport.class);
 
 		assertThat(this.context.getBeansOfType(RequestMappingHandlerMapping.class).size()).isEqualTo(1);
 		assertThat(this.context.getBeansOfType(RequestMappingHandlerAdapter.class).size()).isEqualTo(1);
+	}
+
+	@Test
+	public void shouldConfigureFunctionalVariant() {
+		load(FunctionalConfig.class);
+
+		assertThat(this.context.getBeansOfType(RequestMappingHandlerMapping.class).size()).isEqualTo(0);
+		assertThat(this.context.getBeansOfType(RequestMappingHandlerAdapter.class).size()).isEqualTo(0);
+		assertThat(this.context.getBeansOfType(HttpWebHandlerAdapter.class).size()).isEqualTo(1);
 	}
 
 	@Test
@@ -166,12 +189,15 @@ public class ReactiveWebAutoConfigurationTests {
 		this.context = new AnnotationConfigApplicationContext();
 		EnvironmentTestUtils.addEnvironment(this.context, environment);
 		this.context.register(config);
+		if (!config.equals(BaseConfiguration.class)) {
+			this.context.register(BaseConfiguration.class);
+		}
 		this.context.refresh();
 	}
 
 
 	@Configuration
-	protected static class CustomWebFilters extends BaseConfiguration {
+	protected static class CustomWebFilters {
 
 		@Bean
 		public WebFilter aWebFilter() {
@@ -193,7 +219,7 @@ public class ReactiveWebAutoConfigurationTests {
 
 
 	@Configuration
-	protected static class ExistingDispatcherHandler extends BaseConfiguration {
+	protected static class ExistingDispatcherHandler {
 
 		@Bean
 		public DispatcherHandler dispatcherHandler() {
@@ -202,7 +228,7 @@ public class ReactiveWebAutoConfigurationTests {
 	}
 
 	@Configuration
-	protected static class CustomArgumentResolvers extends BaseConfiguration {
+	protected static class CustomArgumentResolvers {
 
 		@Bean
 		public HandlerMethodArgumentResolver firstResolver() {
@@ -217,7 +243,7 @@ public class ReactiveWebAutoConfigurationTests {
 	}
 
 	@Configuration
-	protected static class ViewResolvers extends BaseConfiguration {
+	protected static class ViewResolvers {
 
 		@Bean
 		@Order(Ordered.HIGHEST_PRECEDENCE)
@@ -236,5 +262,23 @@ public class ReactiveWebAutoConfigurationTests {
 	@EnableConfigurationProperties(ReactiveServerProperties.class)
 	protected static class BaseConfiguration {
 
+	}
+
+	@Configuration
+	protected static class FunctionalConfig {
+
+		@Bean
+		public RouterFunction routerFunction() {
+			return route(GET("/test"), serverRequest -> null);
+		}
+	}
+
+	@Configuration
+	protected static class CustomHttpHandler {
+
+		@Bean
+		public HttpHandler httpHandler() {
+			return (serverHttpRequest, serverHttpResponse) -> null;
+		}
 	}
 }
