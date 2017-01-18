@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016 Pivotal Software Inc, All Rights Reserved.
+ * Copyright (c) 2011-2017 Pivotal Software Inc, All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,24 +72,12 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.t
  */
 @Configuration
 @ConditionalOnClass({DispatcherHandler.class, HttpHandler.class})
-@ConditionalOnMissingBean(HttpHandler.class)
+@ConditionalOnMissingBean({RouterFunction.class, HttpHandler.class})
 @AutoConfigureAfter({ReactiveHttpServerAutoConfiguration.class})
-public class ReactiveWebAutoConfiguration {
+public class AnnotationReactiveWebAutoConfiguration {
 
 	@Configuration
-	@ConditionalOnBean(RouterFunction.class)
-	public static class FunctionalWebReactiveConfig {
-
-		@Bean
-		public HttpWebHandlerAdapter httpHandler(List<RouterFunction> routerFunctions) {
-			Collections.sort(routerFunctions, new AnnotationAwareOrderComparator());
-			return toHttpHandler(routerFunctions.stream().reduce(RouterFunction::and).get());
-		}
-
-	}
-
-	@Configuration
-	@ConditionalOnMissingBean({WebReactiveConfigurationSupport.class, RouterFunction.class})
+	@ConditionalOnMissingBean(WebReactiveConfigurationSupport.class)
 	@EnableConfigurationProperties({ResourceProperties.class, WebReactiveProperties.class})
 	@Import(DelegatingWebReactiveConfiguration.class)
 	public static class WebReactiveConfig implements WebReactiveConfigurer {
@@ -204,10 +192,9 @@ public class ReactiveWebAutoConfiguration {
 		}
 
 		@Bean
-		public HttpHandler httpHandler(DispatcherHandler dispatcherHandler) {
+		public HttpHandler httpHandler() {
 			return WebHttpHandlerBuilder.applicationContext(this.applicationContext).build();
 		}
-
 	}
 
 	@Configuration
@@ -218,7 +205,6 @@ public class ReactiveWebAutoConfiguration {
 		public ResourceChainResourceHandlerRegistrationCustomizer resourceHandlerRegistrationCustomizer() {
 			return new ResourceChainResourceHandlerRegistrationCustomizer();
 		}
-
 	}
 
 	interface ResourceHandlerRegistrationCustomizer {

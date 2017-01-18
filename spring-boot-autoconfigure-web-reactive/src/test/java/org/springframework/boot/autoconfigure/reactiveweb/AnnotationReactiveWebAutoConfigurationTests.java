@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016 Pivotal Software Inc, All Rights Reserved.
+ * Copyright (c) 2011-2017 Pivotal Software Inc, All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import org.springframework.web.reactive.DispatcherHandler;
 import org.springframework.web.reactive.HandlerMapping;
 import org.springframework.web.reactive.accept.CompositeContentTypeResolver;
 import org.springframework.web.reactive.config.WebReactiveConfigurationSupport;
-import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.reactive.resource.CachingResourceResolver;
 import org.springframework.web.reactive.resource.CachingResourceTransformer;
@@ -53,13 +52,11 @@ import org.springframework.web.server.handler.WebHandlerDecorator;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
-import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
-import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 /**
  * @author Brian Clozel
  */
-public class ReactiveWebAutoConfigurationTests {
+public class AnnotationReactiveWebAutoConfigurationTests {
 
 	private AnnotationConfigApplicationContext context;
 
@@ -79,15 +76,6 @@ public class ReactiveWebAutoConfigurationTests {
 
 		assertThat(this.context.getBeansOfType(RequestMappingHandlerMapping.class).size()).isEqualTo(1);
 		assertThat(this.context.getBeansOfType(RequestMappingHandlerAdapter.class).size()).isEqualTo(1);
-	}
-
-	@Test
-	public void shouldConfigureFunctionalVariant() {
-		load(FunctionalConfig.class);
-
-		assertThat(this.context.getBeansOfType(RequestMappingHandlerMapping.class).size()).isEqualTo(0);
-		assertThat(this.context.getBeansOfType(RequestMappingHandlerAdapter.class).size()).isEqualTo(0);
-		assertThat(this.context.getBeansOfType(HttpWebHandlerAdapter.class).size()).isEqualTo(1);
 	}
 
 	@Test
@@ -258,19 +246,10 @@ public class ReactiveWebAutoConfigurationTests {
 	}
 
 	@Configuration
-	@Import({ReactiveWebAutoConfiguration.class})
+	@Import({AnnotationReactiveWebAutoConfiguration.class})
 	@EnableConfigurationProperties(ReactiveServerProperties.class)
 	protected static class BaseConfiguration {
 
-	}
-
-	@Configuration
-	protected static class FunctionalConfig {
-
-		@Bean
-		public RouterFunction routerFunction() {
-			return route(GET("/test"), serverRequest -> null);
-		}
 	}
 
 	@Configuration
