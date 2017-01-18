@@ -86,7 +86,6 @@ public class FunctionalReactiveWebAutoConfigurationTests {
 	}
 
 
-
 	private void load(Class<?> config, String... environment) {
 		this.context = new AnnotationConfigApplicationContext();
 		EnvironmentTestUtils.addEnvironment(this.context, environment);
@@ -141,4 +140,5 @@ public class FunctionalReactiveWebAutoConfigurationTests {
 			return route(GET("/test"), serverRequest -> null);
 		}
 	}
+
 }
