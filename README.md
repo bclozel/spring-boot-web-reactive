@@ -54,6 +54,14 @@ the [sample project build](https://github.com/bclozel/spring-boot-web-reactive/b
 * RxNetty
 * Undertow
 
+## Annotation-based or Functional API
+
+As described in the ["Reactive Web Applications"](http://docs.spring.io/spring/docs/5.0.0.M4/spring-framework-reference/html/web-reactive.html) Spring Framework 5.0 reference documentation, the Web Reactive framework comes in 2 flavors :
+ - Annotation-based with `@Controller` and the other annotations supported also with Spring MVC
+ - Functional, Java 8 lambda style routing and handling
+ 
+Support of the annotation-based variant works like Spring MVC supports: `@Controller` beans are taking automatically in account. But we also introduced support for the functional variant. Such support is triggered by `RouterFunction` beans which can be annotated with any `@Component` style annotation (`@Controller` being one of the possible choices if you put your `RouterFunction` and `HandlerFunction`in the same class). You can see an example of such Spring Boot functional web application with this [functional-web-playground](https://github.com/snicoll-scratches/functional-web-playground) java-based sample application or this [MiXiT](https://github.com/mix-it/mixit/) Kotlin-based project.
+
 ## `WebClient` Dependencies
 
 Spring Framework 5 also provides a reactive `WebClient`.
