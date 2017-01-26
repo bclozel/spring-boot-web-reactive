@@ -67,6 +67,10 @@ public class ReactiveWebApplicationContext extends AnnotationConfigApplicationCo
 	}
 
 	protected void createReactiveHttpServer() {
+		final Boolean enabled = getEnvironment().getProperty("spring.reactive.enabled", Boolean.class, true);
+		if (!enabled) {
+			return;
+		}
 		ReactiveHttpServerFactory serverFactory = getReactiveHttpServerFactory();
 		HttpHandler httpHandler = getHttpHandler();
 		Collection<EmbeddedReactiveHttpServerCustomizer> customizers = getReactiveHttpServerCustomizers();
