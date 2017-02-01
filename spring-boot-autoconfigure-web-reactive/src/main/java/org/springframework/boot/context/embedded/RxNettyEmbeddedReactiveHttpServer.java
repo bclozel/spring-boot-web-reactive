@@ -37,7 +37,7 @@ public class RxNettyEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveH
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		Assert.notNull(getHttpHandler());
+		Assert.notNull(getHttpHandler(), "HttpHandler implementation must not be null");
 		this.rxNettyHandler = new RxNettyHttpHandlerAdapter(getHttpHandler());
 		if(getAddress() != null) {
 			this.rxNettyServer = HttpServer.newServer(new InetSocketAddress(getAddress().getHostAddress(), getPort()));

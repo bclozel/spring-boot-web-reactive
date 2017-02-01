@@ -48,7 +48,7 @@ public class TomcatEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveHt
 		this.tomcatServer.setPort(getPort());
 		this.tomcatServer.getConnector().setAsyncTimeout(getRequestTimeout());
 
-		Assert.notNull(getHttpHandler());
+		Assert.notNull(getHttpHandler(), "HttpHandler implementation must not be null");
 		ServletHttpHandlerAdapter servlet = initServletHttpHandlerAdapter();
 
 		File docBase = createTempDir("tomcat-docbase");
@@ -67,7 +67,7 @@ public class TomcatEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveHt
 			return new ServletHttpHandlerAdapter(getHttpHandlerMap());
 		}
 		else {
-			Assert.notNull(getHttpHandler());
+			Assert.notNull(getHttpHandler(), "HttpHandler implementation must not be null");
 			return new ServletHttpHandlerAdapter(getHttpHandler());
 		}
 	}

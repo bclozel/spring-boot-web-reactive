@@ -37,7 +37,7 @@ public class ReactorEmbeddedReactiveHttpServer extends AbstractEmbeddedReactiveH
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		Assert.notNull(getHttpHandler());
+		Assert.notNull(getHttpHandler(), "HttpHandler implementation must not be null");
 		this.reactorHandler = new ReactorHttpHandlerAdapter(getHttpHandler());
 		if (getAddress() != null) {
 			this.reactorServer = reactor.ipc.netty.http.server.HttpServer.create(getAddress().getHostAddress(), getPort());

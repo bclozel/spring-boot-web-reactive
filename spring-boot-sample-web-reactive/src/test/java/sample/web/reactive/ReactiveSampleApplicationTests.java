@@ -29,17 +29,16 @@ public class ReactiveSampleApplicationTests {
 
 	@Before
 	public void setup() {
-		this.webClient = WebClient.create(new ReactorClientHttpConnector());
+		this.webClient = WebClient.create("http://localhost:" + this.port);
 	}
 
 	@Test
 	public void homeController() {
 
-		ClientRequest<Void> request = ClientRequest.GET("http://localhost:{port}/", this.port)
-				.accept(MediaType.APPLICATION_JSON).build();
-
 		Mono<BootStarter> result = this.webClient
-				.exchange(request)
+				.get().uri("/")
+				.accept(MediaType.APPLICATION_JSON)
+				.exchange()
 				.then(response -> response.bodyToMono(BootStarter.class));
 
 		ScriptedSubscriber.<BootStarter>create()
@@ -53,12 +52,10 @@ public class ReactiveSampleApplicationTests {
 
 	@Test
 	public void starters() {
-
-		ClientRequest<Void> request = ClientRequest.GET("http://localhost:{port}/starters", this.port)
-				.accept(MediaType.APPLICATION_JSON).build();
-
 		Flux<BootStarter> result = this.webClient
-				.exchange(request)
+				.get().uri("/starters")
+				.accept(MediaType.APPLICATION_JSON)
+				.exchange()
 				.flatMap(response -> response.bodyToFlux(BootStarter.class));
 
 		ScriptedSubscriber.<BootStarter>create()
@@ -80,12 +77,10 @@ public class ReactiveSampleApplicationTests {
 
 	@Test
 	public void customArgument() throws Exception {
-		ClientRequest<Void> request = ClientRequest
-				.GET("http://localhost:{port}/custom-arg?content=custom-value", this.port)
-				.accept(MediaType.APPLICATION_JSON).build();
-
 		Mono<String> result = this.webClient
-				.exchange(request)
+				.get().uri("/custom-arg?content=custom-value")
+				.accept(MediaType.APPLICATION_JSON)
+				.exchange()
 				.then(response -> response.body(toMono(String.class)));
 
 		ScriptedSubscriber.<String>create()
@@ -98,12 +93,10 @@ public class ReactiveSampleApplicationTests {
 
 	@Test
 	public void staticResources() throws Exception {
-		ClientRequest<Void> request = ClientRequest
-				.GET("http://localhost:{port}/static/spring.txt", this.port)
-				.accept(MediaType.TEXT_PLAIN).build();
-
 		Mono<String> result = this.webClient
-				.exchange(request)
+				.get().uri("/static/spring.txt")
+				.accept(MediaType.TEXT_PLAIN)
+				.exchange()
 				.then(response -> response.body(toMono(String.class)));
 
 		ScriptedSubscriber.<String>create()
