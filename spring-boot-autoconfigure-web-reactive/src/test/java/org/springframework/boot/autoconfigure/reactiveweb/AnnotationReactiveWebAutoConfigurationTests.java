@@ -32,7 +32,7 @@ import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.web.reactive.DispatcherHandler;
 import org.springframework.web.reactive.HandlerMapping;
 import org.springframework.web.reactive.accept.CompositeContentTypeResolver;
-import org.springframework.web.reactive.config.WebReactiveConfigurationSupport;
+import org.springframework.web.reactive.config.WebFluxConfigurationSupport;
 import org.springframework.web.reactive.handler.SimpleUrlHandlerMapping;
 import org.springframework.web.reactive.resource.CachingResourceResolver;
 import org.springframework.web.reactive.resource.CachingResourceTransformer;
@@ -72,7 +72,7 @@ public class AnnotationReactiveWebAutoConfigurationTests {
 
 	@Test
 	public void shouldNotProcessIfExistingWebReactiveConfiguration() throws Exception {
-		load(WebReactiveConfigurationSupport.class);
+		load(WebFluxConfigurationSupport.class);
 
 		assertThat(this.context.getBeansOfType(RequestMappingHandlerMapping.class).size()).isEqualTo(1);
 		assertThat(this.context.getBeansOfType(RequestMappingHandlerAdapter.class).size()).isEqualTo(1);

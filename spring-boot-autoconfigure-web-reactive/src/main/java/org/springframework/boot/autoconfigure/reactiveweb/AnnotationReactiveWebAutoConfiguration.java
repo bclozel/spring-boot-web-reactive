@@ -16,7 +16,6 @@
 package org.springframework.boot.autoconfigure.reactiveweb;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -28,7 +27,6 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.web.ConditionalOnEnabledResourceChain;
@@ -47,13 +45,13 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.http.CacheControl;
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.web.reactive.DispatcherHandler;
-import org.springframework.web.reactive.config.DelegatingWebReactiveConfiguration;
+import org.springframework.web.reactive.config.DelegatingWebFluxConfiguration;
 import org.springframework.web.reactive.config.ResourceChainRegistration;
 import org.springframework.web.reactive.config.ResourceHandlerRegistration;
 import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.ViewResolverRegistry;
-import org.springframework.web.reactive.config.WebReactiveConfigurationSupport;
-import org.springframework.web.reactive.config.WebReactiveConfigurer;
+import org.springframework.web.reactive.config.WebFluxConfigurationSupport;
+import org.springframework.web.reactive.config.WebFluxConfigurer;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.resource.AppCacheManifestTransformer;
 import org.springframework.web.reactive.resource.GzipResourceResolver;
@@ -61,10 +59,7 @@ import org.springframework.web.reactive.resource.ResourceResolver;
 import org.springframework.web.reactive.resource.VersionResourceResolver;
 import org.springframework.web.reactive.result.method.HandlerMethodArgumentResolver;
 import org.springframework.web.reactive.result.view.ViewResolver;
-import org.springframework.web.server.adapter.HttpWebHandlerAdapter;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
-
-import static org.springframework.web.reactive.function.server.RouterFunctions.toHttpHandler;
 
 /**
  * @author Brian Clozel
@@ -77,10 +72,10 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.t
 public class AnnotationReactiveWebAutoConfiguration {
 
 	@Configuration
-	@ConditionalOnMissingBean(WebReactiveConfigurationSupport.class)
+	@ConditionalOnMissingBean(WebFluxConfigurationSupport.class)
 	@EnableConfigurationProperties({ResourceProperties.class, WebReactiveProperties.class})
-	@Import(DelegatingWebReactiveConfiguration.class)
-	public static class WebReactiveConfig implements WebReactiveConfigurer {
+	@Import(DelegatingWebFluxConfiguration.class)
+	public static class WebReactiveConfig implements WebFluxConfigurer {
 
 		private static final Log logger = LogFactory
 				.getLog(WebReactiveConfig.class);
