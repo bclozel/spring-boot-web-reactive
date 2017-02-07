@@ -34,7 +34,6 @@ public class ReactiveSampleApplicationTests {
 	}
 
 	@Test
-	@Ignore
 	public void homeController() {
 
 		Mono<BootStarter> result = this.webClient
@@ -53,7 +52,6 @@ public class ReactiveSampleApplicationTests {
 	}
 
 	@Test
-	@Ignore
 	public void starters() {
 		Flux<BootStarter> result = this.webClient
 				.get().uri("/starters")
@@ -79,7 +77,6 @@ public class ReactiveSampleApplicationTests {
 	}
 
 	@Test
-	@Ignore
 	public void customArgument() throws Exception {
 		Mono<String> result = this.webClient
 				.get().uri("/custom-arg?content=custom-value")
@@ -96,7 +93,6 @@ public class ReactiveSampleApplicationTests {
 	}
 
 	@Test
-	@Ignore
 	public void staticResources() throws Exception {
 		Mono<String> result = this.webClient
 				.get().uri("/static/spring.txt")
