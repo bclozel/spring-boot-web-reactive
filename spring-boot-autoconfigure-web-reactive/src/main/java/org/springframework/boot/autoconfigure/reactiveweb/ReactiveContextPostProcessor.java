@@ -37,7 +37,7 @@ public class ReactiveContextPostProcessor implements EnvironmentPostProcessor, O
 	static {
 		Map<String, Object> properties = new HashMap<>();
 		properties.put("spring.main.applicationContextClass",
-				"org.springframework.boot.context.embedded.ReactiveWebApplicationContext");
+				"org.springframework.boot.context.embedded.ExperimentalReactiveWebApplicationContext");
 		PROPERTIES = Collections.unmodifiableMap(properties);
 	}
 

@@ -92,7 +92,7 @@ This starter doesn't work with plain `@SpringBootTest`s (i.e. with a `WebEnviron
 
 ```
 Caused by: java.lang.IllegalArgumentException: Unable to call initializer.
-Object of class [org.springframework.boot.context.embedded.ReactiveWebApplicationContext]
+Object of class [org.springframework.boot.context.embedded.ExperimentalReactiveWebApplicationContext]
 must be an instance of interface org.springframework.web.context.ConfigurableWebApplicationContext
 ```
 

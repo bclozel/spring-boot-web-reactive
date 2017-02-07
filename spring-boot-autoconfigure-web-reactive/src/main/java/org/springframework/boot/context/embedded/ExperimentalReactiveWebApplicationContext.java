@@ -26,7 +26,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextException;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
@@ -38,7 +37,7 @@ import org.springframework.util.StringUtils;
 /**
  * @author Brian Clozel
  */
-public class ReactiveWebApplicationContext extends AnnotationConfigApplicationContext {
+public class ExperimentalReactiveWebApplicationContext extends ReactiveWebApplicationContext {
 
 	private EmbeddedReactiveHttpServer embeddedReactiveHttpServer;
 
@@ -104,11 +103,11 @@ public class ReactiveWebApplicationContext extends AnnotationConfigApplicationCo
 				.getBeanNamesForType(HttpHandler.class);
 		if (beanNames.length == 0) {
 			throw new ApplicationContextException(
-					"Unable to start ReactiveWebApplicationContext due to missing HttpHandler bean.");
+					"Unable to start ExperimentalReactiveWebApplicationContext due to missing HttpHandler bean.");
 		}
 		if (beanNames.length > 1) {
 			throw new ApplicationContextException(
-					"Unable to start ReactiveWebApplicationContext due to multiple HttpHandler beans : "
+					"Unable to start ExperimentalReactiveWebApplicationContext due to multiple HttpHandler beans : "
 							+ StringUtils.arrayToCommaDelimitedString(beanNames));
 		}
 		return getBeanFactory().getBean(beanNames[0], HttpHandler.class);

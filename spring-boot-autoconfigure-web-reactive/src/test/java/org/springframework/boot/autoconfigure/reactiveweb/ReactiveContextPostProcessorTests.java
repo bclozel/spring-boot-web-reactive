@@ -36,7 +36,7 @@ public class ReactiveContextPostProcessorTests {
 		ReactiveContextPostProcessor postProcessor = new ReactiveContextPostProcessor();
 		postProcessor.postProcessEnvironment(environment, null);
 		assertThat(environment.getProperty("spring.main.applicationContextClass"))
-				.isEqualTo("org.springframework.boot.context.embedded.ReactiveWebApplicationContext");
+				.isEqualTo("org.springframework.boot.context.embedded.ExperimentalReactiveWebApplicationContext");
 	}
 
 }
