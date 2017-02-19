@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-dependencies</artifactId>
+		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.0.0.BUILD-SNAPSHOT</version>
 		<relativePath/>
 	</parent>
@@ -36,6 +36,11 @@
 				<artifactId>spring-boot-starter-web-reactive</artifactId>
 				<version>0.1.0.BUILD-SNAPSHOT</version>
 			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-logging</artifactId>
+				<version>2.0.0.BUILD-SNAPSHOT</version>
+			</dependency>
 
 			<dependency>
 				<groupId>io.reactivex</groupId>
@@ -50,6 +55,16 @@
 		</dependencies>
 	</dependencyManagement>
 
+
+		<build>
+			<plugins>
+				<plugin>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-maven-plugin</artifactId>
+				</plugin>
+			</plugins>
+		</build>
+
 	<profiles>
 		<profile>
 			<id>repositories</id>
@@ -61,23 +76,39 @@
 			<repositories>
 				<repository>
 					<id>spring-snapshots</id>
-					<url>http://repo.spring.io/snapshot</url>
+					<name>Spring Snapshots</name>
+					<url>https://repo.spring.io/snapshot</url>
 					<snapshots>
 						<enabled>true</enabled>
 					</snapshots>
 				</repository>
 				<repository>
-					<id>oss-jfrog-snapshots</id>
-					<url>https://oss.jfrog.org/libs-snapshot</url>
+					<id>spring-milestones</id>
+					<name>Spring Milestones</name>
+					<url>https://repo.spring.io/milestone</url>
 					<snapshots>
-						<enabled>true</enabled>
+						<enabled>false</enabled>
 					</snapshots>
-				</repository>
-				<repository>
-					<id>spring-milestone</id>
-					<url>http://repo.spring.io/milestone</url>
 				</repository>
 			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<id>spring-snapshots</id>
+					<name>Spring Snapshots</name>
+					<url>https://repo.spring.io/snapshot</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+				</pluginRepository>
+				<pluginRepository>
+					<id>spring-milestones</id>
+					<name>Spring Milestones</name>
+					<url>https://repo.spring.io/milestone</url>
+					<snapshots>
+						<enabled>false</enabled>
+					</snapshots>
+				</pluginRepository>
+			</pluginRepositories>
 		</profile>
 	</profiles>
 
