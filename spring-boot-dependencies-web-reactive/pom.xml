@@ -20,32 +20,12 @@
 		<url>http://www.spring.io</url>
 	</organization>
 
-	<properties>
-		<rx-netty.version>0.5.2-rc.5</rx-netty.version>
-	</properties>
-
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.springframework.boot.experimental</groupId>
-				<artifactId>spring-boot-autoconfigure-web-reactive</artifactId>
-				<version>0.1.0.BUILD-SNAPSHOT</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot.experimental</groupId>
-				<artifactId>spring-boot-starter-web-reactive</artifactId>
-				<version>0.1.0.BUILD-SNAPSHOT</version>
-			</dependency>
-
-			<dependency>
-				<groupId>io.reactivex</groupId>
-				<artifactId>rxnetty-common</artifactId>
-				<version>${rx-netty.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>io.reactivex</groupId>
-				<artifactId>rxnetty-http</artifactId>
-				<version>${rx-netty.version}</version>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-starter-webflux</artifactId>
+				<version>2.0.0.BUILD-SNAPSHOT</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
