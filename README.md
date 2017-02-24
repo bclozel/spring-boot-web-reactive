@@ -8,7 +8,7 @@ and the [Spring Boot 2.0 reference documentation](http://docs.spring.io/spring-b
 
 ## Quickstart
 
-Go to [start.spring.io](https://start.spring.io), set the Spring Boot version to `2.0.0(SNAPSHOT)` and add the "WebFlux" starter.
+Go to [start.spring.io](https://start.spring.io), set the Spring Boot version to `2.0.0(SNAPSHOT)` and add the "Reactive Web" starter.
 
 From there you can take a look at the
 [WebFlux sample apps in the spring boot repository](https://github.com/spring-projects/spring-boot/tree/master/spring-boot-samples#spring-boot-samples).
