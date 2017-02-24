@@ -15,7 +15,7 @@ From there you can take a look at the
 
 ## FAQ
 
-** How should I migrate my existing app to the official starter?**
+**How should I migrate my existing app to the official starter?**
 
 * Remove the `spring-boot-dependencies-web-reactive` BOM import
 * Replace the `"org.springframework.boot.experimental:spring-boot-starter-web-reactive"` dependency with `"org.springframework.boot:spring-boot-starter-webflux"`
